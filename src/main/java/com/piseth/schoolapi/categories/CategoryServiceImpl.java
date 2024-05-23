@@ -1,6 +1,7 @@
 package com.piseth.schoolapi.categories;
 
 
+import com.piseth.schoolapi.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Optional<Category> getById(Long id) {
         return Optional.ofNullable(categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("NOT found")));
+                .orElseThrow(() -> new ResourceNotFoundException("Category", id)));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.piseth.schoolapi.studytypes;
 
+import com.piseth.schoolapi.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,7 @@ public class StudyTypeServiceImpl implements StudyTypeService {
     @Override
     public Optional<StudyType> getById(Long id) {
         return Optional.ofNullable(studyTypeRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("NOT found")));
+                .orElseThrow(()-> new ResourceNotFoundException("StudyType", id)));
     }
 
     @Override
