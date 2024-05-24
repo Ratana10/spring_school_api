@@ -1,5 +1,7 @@
 package com.piseth.schoolapi.studytypes;
 
+import com.piseth.schoolapi.courses.Course;
+import com.piseth.schoolapi.courses.CourseService;
 import com.piseth.schoolapi.exception.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,8 @@ import java.util.Optional;
 public class StudyTypeController {
 
     private final StudyTypeService studyTypeService;
+
+    private final CourseService courseService;
 
     @PostMapping
     public ResponseEntity<ApiResponse> create(@RequestBody StudyTypeDTO dto) {
@@ -85,6 +89,21 @@ public class StudyTypeController {
         ApiResponse response = ApiResponse.builder()
                 .data(studyTypes)
                 .message("get study-type successful")
+                .httpStatus(HttpStatus.OK.value())
+                .build();
+
+        return ResponseEntity
+                .ok()
+                .body(response);
+    }
+
+    @GetMapping("{id}/courses")
+    public ResponseEntity<ApiResponse> getCourseByStudyTypeId(@PathVariable Long id){
+        List<Course> courseList = courseService.getCourseByStudyTypeId(id);
+
+        ApiResponse response = ApiResponse.builder()
+                .data(courseList)
+                .message("get course by studyType id successful")
                 .httpStatus(HttpStatus.OK.value())
                 .build();
 
