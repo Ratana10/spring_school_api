@@ -1,0 +1,193 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001_init_db_schema
+      author: sanratana18@gmail.com
+      changes:
+        - createTable:
+            tableName: study_types
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: categories
+            columns:
+              - column:
+                  name: cat_id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: cat_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: students
+            columns:
+              - column:
+                  name: stu_id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: stu_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: stu_type
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: VARCHAR(20)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: gender
+                  type: VARCHAR(10)
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: courses
+            columns:
+              - column:
+                  name: cou_id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: cou_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: cou_description
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: cou_image
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: student_price
+                  type: DECIMAL(10, 2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: normal_price
+                  type: DECIMAL(10, 2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: study_type_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: cat_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: fk_courses_study_types
+            baseTableName: courses
+            baseColumnNames: study_type_id
+            referencedTableName: study_types
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: fk_courses_categories
+            baseTableName: courses
+            baseColumnNames: cat_id
+            referencedTableName: categories
+            referencedColumnNames: cat_id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+        - createTable:
+            tableName: enrolls
+            columns:
+              - column:
+                  name: enr_id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: enr_course_price
+                  type: DECIMAL(10, 2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: enr_payment_status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: student_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: course_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: enr_date
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: fk_enrolls_students
+            baseTableName: enrolls
+            baseColumnNames: enr_id
+            referencedTableName: students
+            referencedColumnNames: stu_id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: fk_enrolls_courses
+            baseTableName: enrolls
+            baseColumnNames: enr_id
+            referencedTableName: courses
+            referencedColumnNames: cou_id
+            onDelete: CASCADE
+            onUpdate: CASCADE
