@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004_insert_courses
+      author: sanratana18@gmail.com
+      changes:
+        - sqlFile:
+            path: db/data/004_courses.sql

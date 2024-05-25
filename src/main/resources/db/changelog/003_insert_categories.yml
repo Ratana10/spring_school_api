@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003_insert_categories
+      author: sanratana18@gmail.com
+      changes:
+        - sqlFile:
+            path: db/data/003_categories.sql

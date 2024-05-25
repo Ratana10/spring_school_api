@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002_insert_study_types
+      author: sanratana18@gmail.com
+      changes:
+        - sqlFile:
+            path: db/data/002_study_types.sql
