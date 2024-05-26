@@ -2,7 +2,7 @@ INSERT INTO courses(
                     cou_name,
                     cou_description,
                     cou_image,
-                    student_price,
+                    stu_price,
                     normal_price,
                     study_type_id,
                     cat_id)

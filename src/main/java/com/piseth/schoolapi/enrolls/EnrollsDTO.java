@@ -1,22 +1,19 @@
 package com.piseth.schoolapi.enrolls;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Builder;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 
 @Data
-@Builder
-public class EnrollDTO {
+public class EnrollsDTO {
 
     private Long studentId;
 
-    private Long courseId;
+    private List<Long> courseIds;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime enrollDate;
-
 }

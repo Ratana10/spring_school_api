@@ -6,7 +6,7 @@ INSERT INTO students(
     phone,
     gender
 )
-VALUES ('Tola', 'Tola@gmail.com', '123', 'study', '0123', 'M'),
-       ('Ratana', 'Ratana@gmail.com', 'Ratana', 'study', '01234', 'M'),
-       ('kanha', 'kanha@gmail.com', 'kanha', 'study', '012345', 'F'),
-       ('seyha', 'seyha@gmail.com', 'seyha', 'work', '01234567', 'M');
+VALUES ('Tola', 'Tola@gmail.com', '123', 'STUDY', '0123', 'M'),
+       ('Ratana', 'Ratana@gmail.com', 'Ratana', 'STUDY', '01234', 'M'),
+       ('kanha', 'kanha@gmail.com', 'kanha', 'STUDY', '012345', 'F'),
+       ('seyha', 'seyha@gmail.com', 'seyha', 'WORK', '01234567', 'M');

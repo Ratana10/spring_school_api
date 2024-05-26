@@ -1,5 +1,6 @@
 package com.piseth.schoolapi.enrolls;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.piseth.schoolapi.courses.Course;
 import com.piseth.schoolapi.students.Student;
 import jakarta.persistence.*;
@@ -21,15 +22,17 @@ public class Enroll {
     private BigDecimal price;
 
     @Column(name = "enr_payment_status")
-    private String paymentStatus;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
 
-    @ManyToOne
-    @JoinColumn(name = "student_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stu_id")
     private Student student;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cou_id")
     private Course course;
+
 
     @Column(name = "enr_date")
     private LocalDateTime enrollDate;

@@ -25,7 +25,7 @@ public class StudentServiceImpl implements StudentService {
             stu.setName(student.getName());
             stu.setEmail(student.getEmail());
             stu.setPassword(student.getPassword());
-            stu.setType(student.getType());
+            stu.setStudentType(student.getStudentType());
             stu.setPhone(student.getPhone());
             stu.setGender(student.getGender());
 

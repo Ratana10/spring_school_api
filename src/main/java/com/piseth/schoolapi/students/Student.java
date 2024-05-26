@@ -1,7 +1,11 @@
 package com.piseth.schoolapi.students;
 
+import com.piseth.schoolapi.enrolls.Enroll;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -22,11 +26,15 @@ public class Student {
     private String password;
 
     @Column(name = "stu_type")
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private StudentType studentType;
 
     @Column(name = "phone", unique = true)
     private String phone;
 
     @Column(name = "gender")
     private String gender;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Enroll> enrolls = new ArrayList<>();
 }

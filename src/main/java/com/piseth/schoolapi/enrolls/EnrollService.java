@@ -5,6 +5,7 @@ import java.util.Optional;
 
 public interface EnrollService {
     Enroll create(Enroll enroll);
+    List<Enroll> createMultiple(List<Enroll> enrollList);
 
     Enroll update(Long id, Enroll enroll);
 

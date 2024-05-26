@@ -104,7 +104,7 @@ databaseChangeLog:
                   constraints:
                     nullable: true
               - column:
-                  name: student_price
+                  name: stu_price
                   type: DECIMAL(10, 2)
                   constraints:
                     nullable: false
@@ -161,12 +161,12 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: student_id
+                  name: stu_id
                   type: BIGINT
                   constraints:
                     nullable: false
               - column:
-                  name: course_id
+                  name: cou_id
                   type: BIGINT
                   constraints:
                     nullable: false
@@ -178,7 +178,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             constraintName: fk_enrolls_students
             baseTableName: enrolls
-            baseColumnNames: enr_id
+            baseColumnNames: stu_id
             referencedTableName: students
             referencedColumnNames: stu_id
             onDelete: CASCADE
@@ -186,7 +186,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             constraintName: fk_enrolls_courses
             baseTableName: enrolls
-            baseColumnNames: enr_id
+            baseColumnNames: cou_id
             referencedTableName: courses
             referencedColumnNames: cou_id
             onDelete: CASCADE
