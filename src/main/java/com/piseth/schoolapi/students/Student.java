@@ -35,6 +35,4 @@ public class Student {
     @Column(name = "gender")
     private String gender;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Enroll> enrolls = new ArrayList<>();
 }

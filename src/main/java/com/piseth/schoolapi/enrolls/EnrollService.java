@@ -13,7 +13,7 @@ public interface EnrollService {
 
     Optional<Enroll> getById(Long id);
 
-    List<Enroll> getEnrollByCourseId();
-    List<Enroll> getEnrollByStudentId();
+    List<Enroll> getEnrollByCourseId(Long courseId);
+    List<Enroll> getEnrollByStudentId(Long studentId);
 
 }

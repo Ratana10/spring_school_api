@@ -97,13 +97,14 @@ public class EnrollServiceImpl implements EnrollService {
     }
 
     @Override
-    public List<Enroll> getEnrollByCourseId() {
-        return null;
+    public List<Enroll> getEnrollByCourseId(Long courseId) {
+        return enrollRepository.findByCourseId(courseId);
     }
 
     @Override
-    public List<Enroll> getEnrollByStudentId() {
-        return null;
+    public List<Enroll> getEnrollByStudentId(Long studentId) {
+        studentService.getById(studentId);
+        return enrollRepository.findByStudentId(studentId);
     }
 
     private void setCoursePrice(Enroll enroll, Student student, Course course) {

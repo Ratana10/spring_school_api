@@ -1,11 +1,14 @@
 package com.piseth.schoolapi.courses;
 
 import com.piseth.schoolapi.categories.Category;
+import com.piseth.schoolapi.enrolls.Enroll;
 import com.piseth.schoolapi.studytypes.StudyType;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity

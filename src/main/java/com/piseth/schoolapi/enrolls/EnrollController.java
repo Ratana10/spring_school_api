@@ -28,7 +28,7 @@ public class EnrollController {
         enroll = enrollService.create(enroll);
 
         ApiResponse response = ApiResponse.builder()
-                .data(enroll)
+                .data(enrollMapper.toEnrollDTO(enroll))
                 .message("create enroll successful")
                 .httpStatus(HttpStatus.CREATED.value())
                 .build();

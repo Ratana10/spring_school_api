@@ -1,4 +1,4 @@
-package com.piseth.schoolapi.config;
+package com.piseth.schoolapi.jackson;
 
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.format.DateTimeFormatter;
+
 @Configuration
 public class JacksonConfig {
     @Bean
@@ -23,5 +24,4 @@ public class JacksonConfig {
             builder.serializers(new LocalDateTimeSerializer(dateTimeFormatter));
         };
     }
-
 }
