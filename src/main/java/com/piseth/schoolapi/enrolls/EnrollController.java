@@ -23,8 +23,11 @@ public class EnrollController {
     @PostMapping
     public ResponseEntity<ApiResponse> create(@RequestBody EnrollDTO enrollDTO) {
 
+        System.out.println("dto" + enrollDTO);
         Enroll enroll = enrollMapper.toEnroll(enrollDTO);
 //
+        System.out.println("dto" + enroll);
+
         enroll = enrollService.create(enroll);
 
         ApiResponse response = ApiResponse.builder()
