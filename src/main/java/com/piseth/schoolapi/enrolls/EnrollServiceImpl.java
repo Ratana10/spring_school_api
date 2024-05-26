@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,10 +26,10 @@ public class EnrollServiceImpl implements EnrollService {
         Long studentId = enroll.getStudent().getId();
         Long courseId = enroll.getCourse().getId();
 
-        Boolean enrolledCourse = enrollRepository.existsByStudentIdAndCourseId(studentId, courseId);
+        String error = checkStudentEnrollTheCourse(studentId, courseId);
 
-        if (enrolledCourse) {
-            throw new ApiException(String.format("StudentId=%d enrolled the courseId=%d", studentId, courseId), HttpStatus.BAD_REQUEST);
+        if (error != null) {
+            throw new ApiException(error, HttpStatus.BAD_REQUEST);
         }
 
         //set the enroll course price
@@ -47,8 +48,37 @@ public class EnrollServiceImpl implements EnrollService {
 
     @Override
     public List<Enroll> createMultiple(List<Enroll> enrollList) {
+        Long studentId = enrollList.get(0).getStudent().getId();
 
-        return enrollList;
+        List<String> errors = new ArrayList<>();
+        List<Enroll> savedEnroll = new ArrayList<>();
+
+        for (Enroll enroll : enrollList) {
+            Long courseId = enroll.getCourse().getId();
+
+            String error = checkStudentEnrollTheCourse(studentId, courseId);
+            if (error != null) {
+                errors.add(error);
+                continue;
+            }
+
+            Optional<Course> course = courseService.getById(courseId);
+            Optional<Student> student = studentService.getById(studentId);
+
+            if (student.isPresent() && course.isPresent()) {
+                setCoursePrice(enroll, student.get(), course.get());
+            }
+
+            enroll.setPaymentStatus(PaymentStatus.UNPAID);
+            //add to list for save later
+            savedEnroll.add(enroll);
+        }
+
+        if(errors.isEmpty()){
+           return enrollRepository.saveAll(savedEnroll);
+        }else{
+            throw new ApiException( String.join(";", errors), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override
@@ -76,12 +106,24 @@ public class EnrollServiceImpl implements EnrollService {
         return null;
     }
 
-    private void setCoursePrice(Enroll enroll, Student student , Course course) {
+    private void setCoursePrice(Enroll enroll, Student student, Course course) {
         if (student.getStudentType() == StudentType.STUDY) {
             enroll.setPrice(course.getStudentPrice());
 
         } else if (student.getStudentType() == StudentType.WORK) {
             enroll.setPrice(course.getNormalPrice());
+        }
+    }
+
+
+    private String checkStudentEnrollTheCourse(Long studentId, Long courseId) {
+        //check student enrolled
+        Boolean temp = enrollRepository.existsByStudentIdAndCourseId(studentId, courseId);
+
+        if (temp) {
+            return String.format("StudentId=%d enrolled the courseId=%d", studentId, courseId);
+        } else {
+            return null;
         }
 
     }
