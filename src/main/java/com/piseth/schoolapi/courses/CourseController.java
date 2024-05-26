@@ -5,7 +5,9 @@ import com.piseth.schoolapi.enrolls.Enroll;
 import com.piseth.schoolapi.enrolls.EnrollDTO;
 import com.piseth.schoolapi.enrolls.EnrollMapper;
 import com.piseth.schoolapi.enrolls.EnrollService;
+import com.piseth.schoolapi.exception.ApiException;
 import com.piseth.schoolapi.exception.ApiResponse;
+import com.piseth.schoolapi.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,6 +74,10 @@ public class CourseController {
     @GetMapping("{id}")
     public ResponseEntity<ApiResponse> getById(@PathVariable Long id) {
         Optional<Course> byId = courseService.getById(id);
+
+        if(byId.isEmpty()){
+            throw new ResourceNotFoundException("Courses", id);
+        }
 
         ApiResponse response = ApiResponse.builder()
                 .data(CourseMapper.INSTANCE.toCourseDTO(byId.get()))
