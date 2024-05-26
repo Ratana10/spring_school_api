@@ -1,6 +1,10 @@
 package com.piseth.schoolapi.courses;
 
 
+import com.piseth.schoolapi.enrolls.Enroll;
+import com.piseth.schoolapi.enrolls.EnrollDTO;
+import com.piseth.schoolapi.enrolls.EnrollMapper;
+import com.piseth.schoolapi.enrolls.EnrollService;
 import com.piseth.schoolapi.exception.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +20,8 @@ import java.util.Optional;
 public class CourseController {
 
     private final CourseService courseService;
-
+    private final EnrollMapper enrollMapper;
+    private final EnrollService enrollService;
     @PostMapping
     public ResponseEntity<ApiResponse> create(@RequestBody CourseDTO dto) {
         Course course = CourseMapper.INSTANCE.toCourse(dto);
@@ -86,6 +91,26 @@ public class CourseController {
         ApiResponse response = ApiResponse.builder()
                 .data(categories)
                 .message("get courses successful")
+                .httpStatus(HttpStatus.OK.value())
+                .build();
+
+        return ResponseEntity
+                .ok()
+                .body(response);
+    }
+
+    // to see course enrolled by students
+    @GetMapping("{courseId}/enrolls")
+    public ResponseEntity<ApiResponse> getCourseEnroll(@PathVariable Long courseId) {
+        List<Enroll> enrollByCourseId = enrollService.getEnrollByCourseId(courseId);
+
+        List<EnrollDTO> courseDTOList = enrollByCourseId.stream()
+                .map(enrollMapper::toEnrollDTO)
+                .toList();
+
+        ApiResponse response = ApiResponse.builder()
+                .data(courseDTOList)
+                .message("get enroll course successful")
                 .httpStatus(HttpStatus.OK.value())
                 .build();
 

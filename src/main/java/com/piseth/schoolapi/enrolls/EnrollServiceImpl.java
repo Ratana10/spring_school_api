@@ -98,6 +98,7 @@ public class EnrollServiceImpl implements EnrollService {
 
     @Override
     public List<Enroll> getEnrollByCourseId(Long courseId) {
+        courseService.getById(courseId);
         return enrollRepository.findByCourseId(courseId);
     }
 
