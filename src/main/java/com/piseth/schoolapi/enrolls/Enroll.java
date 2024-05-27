@@ -1,7 +1,7 @@
 package com.piseth.schoolapi.enrolls;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.piseth.schoolapi.courses.Course;
+import com.piseth.schoolapi.payments.PaymentStatus;
 import com.piseth.schoolapi.students.Student;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -20,6 +20,9 @@ public class Enroll {
 
     @Column(name = "enr_course_price")
     private BigDecimal price;
+
+    @Column(name = "enr_remain")
+    private BigDecimal remain;
 
     @Column(name = "enr_payment_status")
     @Enumerated(EnumType.STRING)

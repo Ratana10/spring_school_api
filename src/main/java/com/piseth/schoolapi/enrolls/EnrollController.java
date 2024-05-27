@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -42,11 +41,11 @@ public class EnrollController {
     public ResponseEntity<ApiResponse> createMultiple(@RequestBody EnrollsDTO enrollsDTO) {
 
         List<EnrollDTO> listEnrollDTO = enrollsDTO.getCourseIds().stream()
-                .map(courseId ->EnrollDTO.builder()
-                            .studentId(enrollsDTO.getStudentId())
-                            .courseId(courseId)
-                            .enrollDate(enrollsDTO.getEnrollDate())
-                            .build()
+                .map(courseId -> EnrollDTO.builder()
+                        .studentId(enrollsDTO.getStudentId())
+                        .courseId(courseId)
+                        .enrollDate(enrollsDTO.getEnrollDate())
+                        .build()
                 ).toList();
 
         //mapping dto to enroll

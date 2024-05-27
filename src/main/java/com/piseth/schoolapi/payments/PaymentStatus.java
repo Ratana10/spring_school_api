@@ -1,4 +1,4 @@
-package com.piseth.schoolapi.enrolls;
+package com.piseth.schoolapi.payments;
 
 public enum PaymentStatus {
     UNPAID,

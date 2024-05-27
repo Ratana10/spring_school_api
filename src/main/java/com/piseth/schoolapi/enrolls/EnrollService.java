@@ -1,5 +1,6 @@
 package com.piseth.schoolapi.enrolls;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,5 +16,6 @@ public interface EnrollService {
 
     List<Enroll> getEnrollByCourseId(Long courseId);
     List<Enroll> getEnrollByStudentId(Long studentId);
+
 
 }

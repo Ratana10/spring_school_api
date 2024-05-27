@@ -3,6 +3,8 @@ package com.piseth.schoolapi.enrolls;
 import com.piseth.schoolapi.courses.Course;
 import com.piseth.schoolapi.courses.CourseService;
 import com.piseth.schoolapi.exception.ApiException;
+import com.piseth.schoolapi.exception.ResourceNotFoundException;
+import com.piseth.schoolapi.payments.PaymentStatus;
 import com.piseth.schoolapi.students.Student;
 import com.piseth.schoolapi.students.StudentService;
 import com.piseth.schoolapi.students.StudentType;
@@ -40,6 +42,7 @@ public class EnrollServiceImpl implements EnrollService {
             setCoursePrice(enroll, student.get(), course.get());
         }
 
+        enroll.setRemain(enroll.getPrice());
         enroll.setPaymentStatus(PaymentStatus.UNPAID);
 
         return enrollRepository.save(enroll);
@@ -69,6 +72,7 @@ public class EnrollServiceImpl implements EnrollService {
                 setCoursePrice(enroll, student.get(), course.get());
             }
 
+            enroll.setRemain(enroll.getPrice());
             enroll.setPaymentStatus(PaymentStatus.UNPAID);
             //add to list for save later
             savedEnroll.add(enroll);
@@ -83,7 +87,23 @@ public class EnrollServiceImpl implements EnrollService {
 
     @Override
     public Enroll update(Long id, Enroll enroll) {
-        return null;
+
+        Optional<Enroll> byId = getById(id);
+
+        if(byId.isEmpty()){
+            throw  new ResourceNotFoundException("Enroll", id);
+        }
+
+        Enroll enr = byId.get();
+
+        enr.setPrice(enroll.getPrice());
+        enr.setRemain(enroll.getRemain());
+        enr.setPaymentStatus(enroll.getPaymentStatus());
+        enr.setStudent(enroll.getStudent());
+        enr.setCourse(enroll.getCourse());
+        enr.setEnrollDate(enroll.getEnrollDate());
+
+        return enrollRepository.save(enr);
     }
 
     @Override
@@ -93,7 +113,8 @@ public class EnrollServiceImpl implements EnrollService {
 
     @Override
     public Optional<Enroll> getById(Long id) {
-        return Optional.empty();
+        return Optional.ofNullable(enrollRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Enroll", id)));
     }
 
     @Override
