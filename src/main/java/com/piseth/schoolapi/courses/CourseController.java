@@ -8,6 +8,10 @@ import com.piseth.schoolapi.enrolls.EnrollService;
 import com.piseth.schoolapi.exception.ApiException;
 import com.piseth.schoolapi.exception.ApiResponse;
 import com.piseth.schoolapi.exception.ResourceNotFoundException;
+import com.piseth.schoolapi.schedules.Schedule;
+import com.piseth.schoolapi.schedules.ScheduleDTO;
+import com.piseth.schoolapi.schedules.ScheduleMapper;
+import com.piseth.schoolapi.schedules.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +28,10 @@ public class CourseController {
     private final CourseService courseService;
     private final EnrollMapper enrollMapper;
     private final EnrollService enrollService;
+
+    private final ScheduleService scheduleService;
+    private final ScheduleMapper scheduleMapper;
+
     @PostMapping
     public ResponseEntity<ApiResponse> create(@RequestBody CourseDTO dto) {
         Course course = CourseMapper.INSTANCE.toCourse(dto);
@@ -117,6 +125,26 @@ public class CourseController {
         ApiResponse response = ApiResponse.builder()
                 .data(courseDTOList)
                 .message("get enroll course successful")
+                .httpStatus(HttpStatus.OK.value())
+                .build();
+
+        return ResponseEntity
+                .ok()
+                .body(response);
+    }
+
+    @GetMapping("{courseId}/schedules")
+    public ResponseEntity<ApiResponse> getCourseSchedule(@PathVariable Long courseId) {
+        List<Schedule> scheduleByCourseId = scheduleService.getScheduleByCourseId(courseId);
+
+
+        List<ScheduleDTO> scheduleDTOList = scheduleByCourseId.stream()
+                .map(scheduleMapper::toScheduleDTO)
+                .toList();
+
+        ApiResponse response = ApiResponse.builder()
+                .data(scheduleDTOList)
+                .message("get course schedule successful")
                 .httpStatus(HttpStatus.OK.value())
                 .build();
 

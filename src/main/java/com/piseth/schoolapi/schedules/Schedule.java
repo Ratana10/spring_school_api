@@ -3,12 +3,16 @@ package com.piseth.schoolapi.schedules;
 import com.piseth.schoolapi.courses.Course;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalTime;
 
 @Entity
 @Data
 @Table(name = "course_schedule")
+@SQLDelete(sql = "UPDATE course_schedule SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +32,8 @@ public class Schedule {
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
+
+    @Column(name = "deleted")
+    private boolean deleted = Boolean.FALSE;
+
 }
