@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 public interface EnrollMapper {
     EnrollMapper INSTANCE = Mappers.getMapper(EnrollMapper.class);
 
-    @Mapping(source = "studentId", target = "student.id")
-    @Mapping(source = "courseId", target = "course.id")
+    @Mapping(source = "studentId", target = "student")
+    @Mapping(source = "courseId", target = "course")
     Enroll toEnroll(EnrollDTO enrollDTO);
 
     @Mapping(source = "student.id", target = "studentId")

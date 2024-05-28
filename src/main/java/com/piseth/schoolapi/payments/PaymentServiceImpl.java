@@ -17,7 +17,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Payment create(Payment payment) {
 
-        Enroll enroll = enrollService.getById(payment.getEnroll().getId());
+        Enroll enroll = payment.getEnroll();
 
         BigDecimal cashBack = BigDecimal.valueOf(0);
 
