@@ -14,6 +14,5 @@ public class EnrollsDTO {
 
     private List<Long> courseIds;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime enrollDate;
 }

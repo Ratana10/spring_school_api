@@ -19,25 +19,25 @@ public class EnrollController {
     private final EnrollMapper enrollMapper;
     private final EnrollService enrollService;
 
+//    @PostMapping
+//    public ResponseEntity<ApiResponse> create(@RequestBody EnrollDTO enrollDTO) {
+//
+//        Enroll enroll = enrollMapper.toEnroll(enrollDTO);
+//
+//        enroll = enrollService.create(enroll);
+//
+//        ApiResponse response = ApiResponse.builder()
+//                .data(enrollMapper.toEnrollDTO(enroll))
+//                .message("create enroll successful")
+//                .httpStatus(HttpStatus.CREATED.value())
+//                .build();
+//
+//        return ResponseEntity
+//                .status(HttpStatus.CREATED)
+//                .body(response);
+//    }
+
     @PostMapping
-    public ResponseEntity<ApiResponse> create(@RequestBody EnrollDTO enrollDTO) {
-
-        Enroll enroll = enrollMapper.toEnroll(enrollDTO);
-
-        enroll = enrollService.create(enroll);
-
-        ApiResponse response = ApiResponse.builder()
-                .data(enrollMapper.toEnrollDTO(enroll))
-                .message("create enroll successful")
-                .httpStatus(HttpStatus.CREATED.value())
-                .build();
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
-    }
-
-    @PostMapping("/multiple")
     public ResponseEntity<ApiResponse> createMultiple(@RequestBody EnrollsDTO enrollsDTO) {
 
         List<EnrollDTO> listEnrollDTO = enrollsDTO.getCourseIds().stream()
@@ -53,8 +53,10 @@ public class EnrollController {
 
         enrollList = enrollService.createMultiple(enrollList);
 
+        listEnrollDTO = enrollList.stream().map(enrollMapper::toEnrollDTO).toList();
+
         ApiResponse response = ApiResponse.builder()
-                .data(enrollList)
+                .data(listEnrollDTO)
                 .message("create multiple enroll successful")
                 .httpStatus(HttpStatus.CREATED.value())
                 .build();
