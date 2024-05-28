@@ -5,8 +5,10 @@ import com.piseth.schoolapi.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +63,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> getCourseByStudyTypeId(Long studyTypeId) {
         return courseRepository.findByStudyTypeId(studyTypeId);
+    }
+
+    @Override
+    public Set<Course> findCoursesByIds(Set<Long> courseIds) {
+        return new HashSet<>(courseRepository.findAllById(courseIds));
     }
 
 }

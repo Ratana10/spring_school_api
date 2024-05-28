@@ -2,6 +2,7 @@ package com.piseth.schoolapi.courses;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface CourseService {
     Course create(Course course);
@@ -17,5 +18,6 @@ public interface CourseService {
     List<Course> getByCategoryId(Long categoryId);
 
     List<Course> getCourseByStudyTypeId(Long studyTypeId);
+    Set<Course> findCoursesByIds(Set<Long> courseIds);
 
 }
