@@ -2,6 +2,7 @@ package com.piseth.schoolapi.payments;
 
 import com.piseth.schoolapi.enrolls.Enroll;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Table(name = "payments")
 public class Payment {

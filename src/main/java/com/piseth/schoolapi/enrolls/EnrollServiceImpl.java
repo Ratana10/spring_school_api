@@ -78,15 +78,15 @@ public class EnrollServiceImpl implements EnrollService {
             BigDecimal cashback = BigDecimal.valueOf(0);
             enroll = enrollRepository.save(enroll);
 
-
             //have amount => make payment
             if (BigDecimal.ZERO.compareTo(enrollRequest.getAmount()) != 0) {
-                //
-                Payment payment = new Payment();
-                payment.setEnroll(enroll);
-                payment.setAmount(enrollRequest.getAmount());
-                payment.setPaymentType(enrollRequest.getPaymentType());
-                payment.setPaymentDate(LocalDate.from(enrollRequest.getEnrollDate()));
+
+                Payment payment = Payment.builder()
+                        .enroll(enroll)
+                        .amount(enrollRequest.getAmount())
+                        .paymentType(enrollRequest.getPaymentType())
+                        .paymentDate(LocalDate.from(enrollRequest.getEnrollDate()))
+                        .build();
 
                 cashback = paymentUtil.makePayment(payment, enroll);
 
@@ -95,14 +95,17 @@ public class EnrollServiceImpl implements EnrollService {
                 //update enroll
                 enroll = enrollRepository.save(enroll);
 
+
                 //update amount
                 enrollRequest.setAmount(cashback);
             }
+
             newEnroll.add(enroll);
         }
 
-        listEnrollDTO = newEnroll.stream().map(enrollMapper::toEnrollDTO).toList();
-        return listEnrollDTO;
+        return  newEnroll.stream().
+                map(enrollMapper::toEnrollDTO)
+                .toList();
     }
 
 
