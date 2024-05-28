@@ -4,6 +4,8 @@ import com.piseth.schoolapi.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PromotionServiceImpl implements PromotionService {
@@ -36,5 +38,10 @@ public class PromotionServiceImpl implements PromotionService {
     public Promotion getById(Long id) {
         return promotionRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Promotion", id));
+    }
+
+    @Override
+    public List<Promotion> getPromotions() {
+        return promotionRepository.findAll();
     }
 }

@@ -1,5 +1,7 @@
 package com.piseth.schoolapi.promotion;
 
+import java.util.List;
+
 public interface PromotionService {
     Promotion create(Promotion promotion);
 
@@ -8,5 +10,6 @@ public interface PromotionService {
     void delete(Long id);
 
     Promotion getById(Long id);
+    List<Promotion> getPromotions();
 
 }
