@@ -1,12 +1,9 @@
 package com.piseth.schoolapi.enrolls;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 public interface EnrollService {
-    Enroll create(Enroll enroll);
-    List<Enroll> createMultiple(List<Enroll> enrollList);
+    List<EnrollDTO> create(EnrollRequest enrollRequest);
 
     Enroll update(Long id, Enroll enroll);
 

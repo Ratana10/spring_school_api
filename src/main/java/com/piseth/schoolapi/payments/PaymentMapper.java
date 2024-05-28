@@ -12,7 +12,7 @@ import org.mapstruct.factory.Mappers;
 public interface PaymentMapper {
     PaymentMapper INSTANCE = Mappers.getMapper(PaymentMapper.class);
 
-    @Mapping(source = "enrollId", target = "enroll.id")
+    @Mapping(source = "enrollId", target = "enroll")
     Payment toPayment(PaymentDTO enrollDTO);
 
     @Mapping(source = "enroll.id", target = "enrollId")

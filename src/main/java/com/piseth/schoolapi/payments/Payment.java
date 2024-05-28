@@ -2,7 +2,9 @@ package com.piseth.schoolapi.payments;
 
 import com.piseth.schoolapi.enrolls.Enroll;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

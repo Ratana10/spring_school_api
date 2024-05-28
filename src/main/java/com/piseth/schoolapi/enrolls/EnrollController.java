@@ -16,48 +16,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EnrollController {
 
-    private final EnrollMapper enrollMapper;
     private final EnrollService enrollService;
 
-//    @PostMapping
-//    public ResponseEntity<ApiResponse> create(@RequestBody EnrollDTO enrollDTO) {
-//
-//        Enroll enroll = enrollMapper.toEnroll(enrollDTO);
-//
-//        enroll = enrollService.create(enroll);
-//
-//        ApiResponse response = ApiResponse.builder()
-//                .data(enrollMapper.toEnrollDTO(enroll))
-//                .message("create enroll successful")
-//                .httpStatus(HttpStatus.CREATED.value())
-//                .build();
-//
-//        return ResponseEntity
-//                .status(HttpStatus.CREATED)
-//                .body(response);
-//    }
-
     @PostMapping
-    public ResponseEntity<ApiResponse> createMultiple(@RequestBody EnrollsDTO enrollsDTO) {
+    public ResponseEntity<ApiResponse> createMultipleTest(@RequestBody EnrollRequest enrollRequest) {
 
-        List<EnrollDTO> listEnrollDTO = enrollsDTO.getCourseIds().stream()
-                .map(courseId -> EnrollDTO.builder()
-                        .studentId(enrollsDTO.getStudentId())
-                        .courseId(courseId)
-                        .enrollDate(enrollsDTO.getEnrollDate())
-                        .build()
-                ).toList();
-
-        //mapping dto to enroll
-        List<Enroll> enrollList = enrollMapper.toEnrollList(listEnrollDTO);
-
-        enrollList = enrollService.createMultiple(enrollList);
-
-        listEnrollDTO = enrollList.stream().map(enrollMapper::toEnrollDTO).toList();
+        List<EnrollDTO> enrollDTOList = enrollService.create(enrollRequest);
 
         ApiResponse response = ApiResponse.builder()
-                .data(listEnrollDTO)
-                .message("create multiple enroll successful")
+                .data(enrollDTOList)
+                .message("create enroll successful")
                 .httpStatus(HttpStatus.CREATED.value())
                 .build();
 

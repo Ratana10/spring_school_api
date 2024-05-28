@@ -4,4 +4,5 @@ public enum PaymentType {
     ABA,
     ACLEDA,
     WING,
+    NONE
 }

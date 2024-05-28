@@ -4,19 +4,21 @@ import com.piseth.schoolapi.courses.Course;
 import com.piseth.schoolapi.courses.CourseService;
 import com.piseth.schoolapi.exception.ApiException;
 import com.piseth.schoolapi.exception.ResourceNotFoundException;
+import com.piseth.schoolapi.payments.Payment;
+import com.piseth.schoolapi.payments.PaymentRepository;
 import com.piseth.schoolapi.payments.PaymentStatus;
 import com.piseth.schoolapi.students.Student;
 import com.piseth.schoolapi.students.StudentService;
 import com.piseth.schoolapi.students.StudentType;
-import com.piseth.schoolapi.studytypes.StudyType;
+import com.piseth.schoolapi.utils.PaymentUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,74 +26,32 @@ public class EnrollServiceImpl implements EnrollService {
     private final StudentService studentService;
     private final CourseService courseService;
     private final EnrollRepository enrollRepository;
+    private final EnrollMapper enrollMapper;
+    private final PaymentUtil paymentUtil;
+    private final PaymentRepository paymentRepository;
 
     @Override
-    public Enroll create(Enroll enroll) {
-//        Long studentId = enroll.getStudent().getId();
-//        Long courseId = enroll.getCourse().getId();
-//
-//        String error = checkStudentEnrollTheCourse(studentId, courseId);
-//
-//        if (error != null) {
-//            throw new ApiException(error, HttpStatus.BAD_REQUEST);
-//        }
-//
-//        //set the enroll course price
-//        Course course = courseService.getById(courseId);
-//        Student student = studentService.getById(studentId);
-//
-//        setCoursePrice(enroll, student, course);
-//
-//
-//        enroll.setRemain(enroll.getPrice());
-//        enroll.setPaymentStatus(PaymentStatus.UNPAID);
+    public List<EnrollDTO> create(EnrollRequest enrollRequest) {
 
-//        return enrollRepository.save(enroll);
-return null;
-    }
+        //Mapping enroll
+        List<EnrollDTO> listEnrollDTO = enrollRequest.getCourseIds().stream()
+                .map(courseId -> EnrollDTO.builder()
+                        .studentId(enrollRequest.getStudentId())
+                        .courseId(courseId)
+                        .enrollDate(enrollRequest.getEnrollDate())
+                        .build()
+                ).toList();
 
-//    @Override
-//    public List<Enroll> createMultiple(List<Enroll> enrollList) {
-//        Long studentId = enrollList.get(0).getStudent().getId();
-//
-//        List<String> errors = new ArrayList<>();
-//        List<Enroll> savedEnroll = new ArrayList<>();
-//
-//        for (Enroll enroll : enrollList) {
-//            Long courseId = enroll.getCourse().getId();
-//
-//            String error = checkStudentEnrollTheCourse(studentId, courseId);
-//            if (error != null) {
-//                errors.add(error);
-//                continue;
-//            }
-//
-//            Course course = courseService.getById(courseId);
-//            Student student = studentService.getById(studentId);
-//
-//            setCoursePrice(enroll, student, course);
-//
-//            enroll.setRemain(enroll.getPrice());
-//            enroll.setPaymentStatus(PaymentStatus.UNPAID);
-//            //add to list for save later
-//            savedEnroll.add(enroll);
-//        }
-//
-//        if (errors.isEmpty()) {
-//            return enrollRepository.saveAll(savedEnroll);
-//        } else {
-//            throw new ApiException(String.join(";", errors), HttpStatus.BAD_REQUEST);
-//        }
-//    }
+        //mapping dto to enroll
+        List<Enroll> enrolls = enrollMapper.toEnrollList(listEnrollDTO);
 
-    @Override
-    public List<Enroll> createMultiple(List<Enroll> enrollList) {
-        Student student = enrollList.get(0).getStudent();
+        Student student = enrolls.get(0).getStudent();
 
         List<String> errors = new ArrayList<>();
         List<Enroll> savedEnroll = new ArrayList<>();
+        List<Enroll> newEnroll = new ArrayList<>();
 
-        for(Enroll enroll : enrollList){
+        for (Enroll enroll : enrolls) {
             Course course = enroll.getCourse();
 
             String error = checkStudentEnrollTheCourse(student.getId(), course.getId());
@@ -101,20 +61,51 @@ return null;
             }
 
             BigDecimal coursePrice = checkCoursePrice(student.getStudentType(), course);
+
             enroll.setPrice(coursePrice);
             enroll.setRemain(coursePrice);
             enroll.setPaymentStatus(PaymentStatus.UNPAID);
-
             savedEnroll.add(enroll);
         }
 
         if (!errors.isEmpty()) {
             throw new ApiException(String.join(";", errors), HttpStatus.BAD_REQUEST);
-
         }
 
-        return enrollRepository.saveAll(savedEnroll);
+        //if no error => create enroll and payment
+        for (Enroll enroll : savedEnroll) {
+
+            BigDecimal cashback = BigDecimal.valueOf(0);
+            enroll = enrollRepository.save(enroll);
+
+
+            //have amount => make payment
+            if (BigDecimal.ZERO.compareTo(enrollRequest.getAmount()) != 0) {
+                //
+                Payment payment = new Payment();
+                payment.setEnroll(enroll);
+                payment.setAmount(enrollRequest.getAmount());
+                payment.setPaymentType(enrollRequest.getPaymentType());
+                payment.setPaymentDate(LocalDate.from(enrollRequest.getEnrollDate()));
+
+                cashback = paymentUtil.makePayment(payment, enroll);
+
+                //save payment
+                paymentRepository.save(payment);
+                //update enroll
+                enroll = enrollRepository.save(enroll);
+
+                //update amount
+                enrollRequest.setAmount(cashback);
+            }
+            newEnroll.add(enroll);
+        }
+
+        listEnrollDTO = newEnroll.stream().map(enrollMapper::toEnrollDTO).toList();
+        return listEnrollDTO;
     }
+
+
     @Override
     public Enroll update(Long id, Enroll enroll) {
 
@@ -153,21 +144,12 @@ return null;
         return enrollRepository.findByStudentId(studentId);
     }
 
-    private void setCoursePrice1(Enroll enroll, Student student, Course course) {
-        if (student.getStudentType() == StudentType.STUDY) {
-            enroll.setPrice(course.getStudentPrice());
-
-        } else if (student.getStudentType() == StudentType.WORK) {
-            enroll.setPrice(course.getNormalPrice());
+    private BigDecimal checkCoursePrice(StudentType studyType, Course course) {
+        if (studyType == StudentType.STUDY) {
+            return course.getStudentPrice();
         }
-    }
 
-    private BigDecimal checkCoursePrice(StudentType studyType, Course course ){
-       if(studyType == StudentType.STUDY){
-           return course.getStudentPrice();
-       }
-
-       return course.getNormalPrice();
+        return course.getNormalPrice();
     }
 
 
@@ -175,11 +157,9 @@ return null;
         //check student enrolled
         Boolean temp = enrollRepository.existsByStudentIdAndCourseId(studentId, courseId);
 
-        if (temp) {
-            return String.format("StudentId=%d enrolled the courseId=%d already", studentId, courseId);
-        } else {
-            return null;
-        }
+        return temp ?
+                String.format("StudentId=%d enrolled the courseId=%d already", studentId, courseId)
+                : null;
 
     }
 }
