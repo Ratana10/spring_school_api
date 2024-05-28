@@ -65,10 +65,10 @@ public class CategoryController {
 
     @GetMapping("{id}")
     public ResponseEntity<ApiResponse> getById(@PathVariable Long id) {
-        Optional<Category> byId = categoryService.getById(id);
+       Category byId = categoryService.getById(id);
 
         ApiResponse response = ApiResponse.builder()
-                .data(CategoryMapper.INSTANCE.toCategoryDTO(byId.get()))
+                .data(CategoryMapper.INSTANCE.toCategoryDTO(byId))
                 .message("get category successful")
                 .httpStatus(HttpStatus.OK.value())
                 .build();

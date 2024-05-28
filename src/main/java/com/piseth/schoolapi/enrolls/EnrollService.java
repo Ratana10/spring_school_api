@@ -12,7 +12,7 @@ public interface EnrollService {
 
     void delete(Long id);
 
-    Optional<Enroll> getById(Long id);
+    Enroll getById(Long id);
 
     List<Enroll> getEnrollByCourseId(Long courseId);
     List<Enroll> getEnrollByStudentId(Long studentId);

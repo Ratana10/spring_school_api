@@ -7,7 +7,7 @@ public interface StudyTypeService {
     StudyType create(StudyType studyType);
     StudyType update(Long id, StudyType studyType);
     void delete(Long id);
-    Optional<StudyType> getById(Long id);
+    StudyType getById(Long id);
     List<StudyType> getStudyTypes();
 
 }

@@ -69,10 +69,10 @@ public class StudyTypeController {
 
     @GetMapping("{id}")
     public ResponseEntity<ApiResponse> getById(@PathVariable Long id) {
-        Optional<StudyType> byId = studyTypeService.getById(id);
+        StudyType byId = studyTypeService.getById(id);
 
         ApiResponse response = ApiResponse.builder()
-                .data(StudyTypeMapper.INSTANCE.toStudyTypeDTO(byId.get()))
+                .data(StudyTypeMapper.INSTANCE.toStudyTypeDTO(byId))
                 .message("get study-type successful")
                 .httpStatus(HttpStatus.OK.value())
                 .build();

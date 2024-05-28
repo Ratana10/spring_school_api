@@ -72,10 +72,10 @@ public class StudentController {
 
     @GetMapping("{id}")
     public ResponseEntity<ApiResponse> getById(@PathVariable Long id) {
-        Optional<Student> byId = studentService.getById(id);
+        Student byId = studentService.getById(id);
 
         ApiResponse response = ApiResponse.builder()
-                .data(StudentMapper.INSTANCE.toStudentDTO(byId.get()))
+                .data(StudentMapper.INSTANCE.toStudentDTO(byId))
                 .message("get student successful")
                 .httpStatus(HttpStatus.OK.value())
                 .build();
