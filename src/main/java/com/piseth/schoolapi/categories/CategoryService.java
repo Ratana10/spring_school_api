@@ -10,7 +10,7 @@ public interface CategoryService {
 
     void delete(Long id);
 
-    Optional<Category> getById(Long id);
+    Category getById(Long id);
 
     List<Category> getCategories();
 

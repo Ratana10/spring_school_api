@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -23,31 +22,32 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course update(Long id, Course course) {
-        Optional<Course> byId = getById(id);
-        return byId.map(c ->{
-            c.setName(course.getName());
-            c.setDescription(course.getDescription());
-            c.setImage(course.getImage());
-            c.setStudentPrice(course.getStudentPrice());
-            c.setNormalPrice(course.getNormalPrice());
+        Course byId = getById(id);
+
+
+        byId.setName(course.getName());
+        byId.setDescription(course.getDescription());
+        byId.setImage(course.getImage());
+        byId.setStudentPrice(course.getStudentPrice());
+        byId.setNormalPrice(course.getNormalPrice());
 //            c.setStudyType(course.getStudyType());
 //            c.setCategory(course.getCategory());
-            return courseRepository.save(c);
-        }).orElse(null);
+        return courseRepository.save(byId);
+
     }
 
     @Override
     public void delete(Long id) {
-        Optional<Course> byId = getById(id);
-        if (byId.isPresent()) {
-            courseRepository.deleteById(id);
-        }
+        Course byId = getById(id);
+
+        courseRepository.deleteById(id);
+
     }
 
     @Override
-    public Optional<Course> getById(Long id) {
-        return Optional.ofNullable(courseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Course", id)));
+    public Course getById(Long id) {
+        return courseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", id));
     }
 
     @Override

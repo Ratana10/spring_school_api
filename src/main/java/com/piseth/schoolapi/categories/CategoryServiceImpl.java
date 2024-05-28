@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,27 +20,27 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category update(Long id, Category category) {
-        Optional<Category> byId = getById(id);
-        if (byId.isPresent()) {
-            byId.get().setName(category.getName());
-            categoryRepository.save(byId.get());
-            return byId.get();
-        }
-        return null;
+        Category byId = getById(id);
+
+        byId.setName(category.getName());
+        categoryRepository.save(byId);
+        return byId;
+
+
     }
 
     @Override
     public void delete(Long id) {
-        Optional<Category> byId = getById(id);
-        if (byId.isPresent()) {
-            categoryRepository.deleteById(id);
-        }
+        Category byId = getById(id);
+
+        categoryRepository.deleteById(id);
+
     }
 
     @Override
-    public Optional<Category> getById(Long id) {
-        return Optional.ofNullable(categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", id)));
+    public Category getById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", id));
     }
 
     @Override

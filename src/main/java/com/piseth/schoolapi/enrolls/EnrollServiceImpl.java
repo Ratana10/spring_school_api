@@ -35,12 +35,11 @@ public class EnrollServiceImpl implements EnrollService {
         }
 
         //set the enroll course price
-        Optional<Course> course = courseService.getById(courseId);
-        Optional<Student> student = studentService.getById(studentId);
+        Course course = courseService.getById(courseId);
+        Student student = studentService.getById(studentId);
 
-        if (student.isPresent() && course.isPresent()) {
-            setCoursePrice(enroll, student.get(), course.get());
-        }
+        setCoursePrice(enroll, student, course);
+
 
         enroll.setRemain(enroll.getPrice());
         enroll.setPaymentStatus(PaymentStatus.UNPAID);
@@ -65,12 +64,10 @@ public class EnrollServiceImpl implements EnrollService {
                 continue;
             }
 
-            Optional<Course> course = courseService.getById(courseId);
-            Optional<Student> student = studentService.getById(studentId);
+            Course course = courseService.getById(courseId);
+            Student student = studentService.getById(studentId);
 
-            if (student.isPresent() && course.isPresent()) {
-                setCoursePrice(enroll, student.get(), course.get());
-            }
+            setCoursePrice(enroll, student, course);
 
             enroll.setRemain(enroll.getPrice());
             enroll.setPaymentStatus(PaymentStatus.UNPAID);
@@ -78,32 +75,26 @@ public class EnrollServiceImpl implements EnrollService {
             savedEnroll.add(enroll);
         }
 
-        if(errors.isEmpty()){
-           return enrollRepository.saveAll(savedEnroll);
-        }else{
-            throw new ApiException( String.join(";", errors), HttpStatus.BAD_REQUEST);
+        if (errors.isEmpty()) {
+            return enrollRepository.saveAll(savedEnroll);
+        } else {
+            throw new ApiException(String.join(";", errors), HttpStatus.BAD_REQUEST);
         }
     }
 
     @Override
     public Enroll update(Long id, Enroll enroll) {
 
-        Optional<Enroll> byId = getById(id);
+        Enroll byId = getById(id);
 
-        if(byId.isEmpty()){
-            throw  new ResourceNotFoundException("Enroll", id);
-        }
+        byId.setPrice(enroll.getPrice());
+        byId.setRemain(enroll.getRemain());
+        byId.setPaymentStatus(enroll.getPaymentStatus());
+        byId.setStudent(enroll.getStudent());
+        byId.setCourse(enroll.getCourse());
+        byId.setEnrollDate(enroll.getEnrollDate());
 
-        Enroll enr = byId.get();
-
-        enr.setPrice(enroll.getPrice());
-        enr.setRemain(enroll.getRemain());
-        enr.setPaymentStatus(enroll.getPaymentStatus());
-        enr.setStudent(enroll.getStudent());
-        enr.setCourse(enroll.getCourse());
-        enr.setEnrollDate(enroll.getEnrollDate());
-
-        return enrollRepository.save(enr);
+        return enrollRepository.save(byId);
     }
 
     @Override
@@ -112,9 +103,9 @@ public class EnrollServiceImpl implements EnrollService {
     }
 
     @Override
-    public Optional<Enroll> getById(Long id) {
-        return Optional.ofNullable(enrollRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Enroll", id)));
+    public Enroll getById(Long id) {
+        return enrollRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Enroll", id));
     }
 
     @Override
