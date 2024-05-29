@@ -23,7 +23,7 @@ public class PromotionServiceImpl implements PromotionService {
         byId.setDescription(promotion.getDescription());
         byId.setStartDate(promotion.getStartDate());
         byId.setEndDate(promotion.getEndDate());
-        byId.setCourses(promotion.getCourses());
+        byId.setPromotionCourses(promotion.getPromotionCourses());
 
         return promotionRepository.save(promotion);
     }

@@ -13,12 +13,14 @@ import java.util.stream.Collectors;
 )
 public interface PromotionMapper {
     @Mappings({
-            @Mapping(source = "courseIds", target = "courses", qualifiedByName = "courseIdSetToCourseSet")
+            @Mapping(source = "promotionCourseIds", target = "promotionCourses", qualifiedByName = "courseIdSetToCourseSet"),
+            @Mapping(source = "requiredCourseIds", target = "requiredCourses", qualifiedByName = "courseIdSetToCourseSet")
     })
     Promotion toPromotion(PromotionDTO promotionDTO, @Context CourseService courseService);
 
     @Mappings({
-            @Mapping(source = "courses", target = "courseIds", qualifiedByName = "courseSetToCourseIdSet")
+            @Mapping(source = "promotionCourses", target = "promotionCourseIds", qualifiedByName = "courseSetToCourseIdSet"),
+            @Mapping(source = "requiredCourses", target = "requiredCourseIds", qualifiedByName = "courseSetToCourseIdSet")
     })
     PromotionDTO toPromotionDTO(Promotion promotion);
 

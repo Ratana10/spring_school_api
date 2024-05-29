@@ -4,6 +4,7 @@ import com.piseth.schoolapi.courses.Course;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,11 +30,25 @@ public class Promotion {
     @Column(name = "pro_end_date")
     private LocalDateTime endDate;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "promotion_courses",
             joinColumns = @JoinColumn(name = "pro_id"),
             inverseJoinColumns = @JoinColumn(name = "cou_id")
     )
-    private Set<Course> courses = new HashSet<>();
+    private Set<Course> promotionCourses = new HashSet<>();
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "promotion_required_courses",
+            joinColumns = @JoinColumn(name = "pro_id"),
+            inverseJoinColumns = @JoinColumn(name = "cou_id")
+    )
+    private Set<Course> requiredCourses = new HashSet<>();
+
+    @Column(name = "dis_amount")
+    private BigDecimal discountAmount = BigDecimal.ZERO;
+
+    @Column(name = "disc_percentage")
+    private BigDecimal discountPercentage = BigDecimal.ZERO;
 }

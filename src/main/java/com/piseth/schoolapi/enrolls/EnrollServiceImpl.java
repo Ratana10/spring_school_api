@@ -7,10 +7,13 @@ import com.piseth.schoolapi.exception.ResourceNotFoundException;
 import com.piseth.schoolapi.payments.Payment;
 import com.piseth.schoolapi.payments.PaymentRepository;
 import com.piseth.schoolapi.payments.PaymentStatus;
+import com.piseth.schoolapi.promotion.Promotion;
+import com.piseth.schoolapi.promotion.PromotionService;
 import com.piseth.schoolapi.students.Student;
 import com.piseth.schoolapi.students.StudentService;
-import com.piseth.schoolapi.students.StudentType;
+import com.piseth.schoolapi.utils.EnrollUtil;
 import com.piseth.schoolapi.utils.PaymentUtil;
+import com.piseth.schoolapi.utils.PromotionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,8 +30,10 @@ public class EnrollServiceImpl implements EnrollService {
     private final CourseService courseService;
     private final EnrollRepository enrollRepository;
     private final EnrollMapper enrollMapper;
-    private final PaymentUtil paymentUtil;
     private final PaymentRepository paymentRepository;
+    private final PromotionService promotionService;
+    private final EnrollUtil enrollUtil;
+    private final PromotionUtil promotionUtil;
 
     @Override
     public List<EnrollDTO> create(EnrollRequest enrollRequest) {
@@ -50,17 +55,21 @@ public class EnrollServiceImpl implements EnrollService {
         List<String> errors = new ArrayList<>();
         List<Enroll> savedEnroll = new ArrayList<>();
         List<Enroll> newEnroll = new ArrayList<>();
+        List<Course> courseEnroll = new ArrayList<>();
+
 
         for (Enroll enroll : enrolls) {
             Course course = enroll.getCourse();
 
-            String error = checkStudentEnrollTheCourse(student.getId(), course.getId());
+            String error = enrollUtil.checkStudentEnrollTheCourse(student.getId(), course.getId());
             if (error != null) {
                 errors.add(error);
                 continue;
             }
 
-            BigDecimal coursePrice = checkCoursePrice(student.getStudentType(), course);
+            courseEnroll.add(course);
+
+            BigDecimal coursePrice = enrollUtil.checkCoursePrice(student.getStudentType(), course);
 
             enroll.setPrice(coursePrice);
             enroll.setRemain(coursePrice);
@@ -72,10 +81,19 @@ public class EnrollServiceImpl implements EnrollService {
             throw new ApiException(String.join(";", errors), HttpStatus.BAD_REQUEST);
         }
 
+        //apply for promotion
+        Promotion promotion = promotionService.getById(enrollRequest.getPromotionId());
+        if (promotion != null) {
+             promotionUtil.applyPromotion(enrollRequest, student, savedEnroll, promotion);
+        }
+        // savedEnroll updated in promotion util
+        //---------------------------------
+
+
         //if no error => create enroll and payment
         for (Enroll enroll : savedEnroll) {
 
-            BigDecimal cashback = BigDecimal.valueOf(0);
+            BigDecimal cashback = BigDecimal.ZERO;
             enroll = enrollRepository.save(enroll);
 
             //have amount => make payment
@@ -88,7 +106,7 @@ public class EnrollServiceImpl implements EnrollService {
                         .paymentDate(LocalDate.from(enrollRequest.getEnrollDate()))
                         .build();
 
-                cashback = paymentUtil.makePayment(payment, enroll);
+                cashback = PaymentUtil.makePayment(payment, enroll);
 
                 //save payment
                 paymentRepository.save(payment);
@@ -103,7 +121,7 @@ public class EnrollServiceImpl implements EnrollService {
             newEnroll.add(enroll);
         }
 
-        return  newEnroll.stream().
+        return newEnroll.stream().
                 map(enrollMapper::toEnrollDTO)
                 .toList();
     }
@@ -147,22 +165,4 @@ public class EnrollServiceImpl implements EnrollService {
         return enrollRepository.findByStudentId(studentId);
     }
 
-    private BigDecimal checkCoursePrice(StudentType studyType, Course course) {
-        if (studyType == StudentType.STUDY) {
-            return course.getStudentPrice();
-        }
-
-        return course.getNormalPrice();
-    }
-
-
-    private String checkStudentEnrollTheCourse(Long studentId, Long courseId) {
-        //check student enrolled
-        Boolean temp = enrollRepository.existsByStudentIdAndCourseId(studentId, courseId);
-
-        return temp ?
-                String.format("StudentId=%d enrolled the courseId=%d already", studentId, courseId)
-                : null;
-
-    }
 }

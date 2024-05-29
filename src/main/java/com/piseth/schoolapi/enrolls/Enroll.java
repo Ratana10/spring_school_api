@@ -4,11 +4,16 @@ import com.piseth.schoolapi.courses.Course;
 import com.piseth.schoolapi.payments.PaymentStatus;
 import com.piseth.schoolapi.students.Student;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Data
 @Table(name = "enrolls")
