@@ -18,4 +18,5 @@ public class EnrollRequest {
     private LocalDateTime enrollDate;
     private BigDecimal amount;
     private PaymentType paymentType;
+    private Long promotionId;
 }

@@ -30,7 +30,7 @@ public class Promotion {
     @Column(name = "pro_end_date")
     private LocalDateTime endDate;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "promotion_courses",
             joinColumns = @JoinColumn(name = "pro_id"),
@@ -38,17 +38,17 @@ public class Promotion {
     )
     private Set<Course> promotionCourses = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     @JoinTable(
-            name = "required_courses",
+            name = "promotion_required_courses",
             joinColumns = @JoinColumn(name = "pro_id"),
             inverseJoinColumns = @JoinColumn(name = "cou_id")
     )
     private Set<Course> requiredCourses = new HashSet<>();
 
     @Column(name = "dis_amount")
-    private BigDecimal discountAmount;
+    private BigDecimal discountAmount = BigDecimal.ZERO;
 
     @Column(name = "disc_percentage")
-    private BigDecimal discountPercentage;
+    private BigDecimal discountPercentage = BigDecimal.ZERO;
 }
