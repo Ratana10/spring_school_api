@@ -4,6 +4,7 @@ import com.piseth.schoolapi.courses.Course;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,5 +36,19 @@ public class Promotion {
             joinColumns = @JoinColumn(name = "pro_id"),
             inverseJoinColumns = @JoinColumn(name = "cou_id")
     )
-    private Set<Course> courses = new HashSet<>();
+    private Set<Course> promotionCourses = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "required_courses",
+            joinColumns = @JoinColumn(name = "pro_id"),
+            inverseJoinColumns = @JoinColumn(name = "cou_id")
+    )
+    private Set<Course> requiredCourses = new HashSet<>();
+
+    @Column(name = "dis_amount")
+    private BigDecimal discountAmount;
+
+    @Column(name = "disc_percentage")
+    private BigDecimal discountPercentage;
 }
