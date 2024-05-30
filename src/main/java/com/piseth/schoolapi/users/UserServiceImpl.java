@@ -16,7 +16,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(Long id, User user) {
-        return null;
+        User byId = getById(id);
+        return userRepository.save(byId);
     }
 
     @Override

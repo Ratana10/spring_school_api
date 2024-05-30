@@ -2,22 +2,33 @@ package com.piseth.schoolapi.users;
 
 import com.piseth.schoolapi.roles.Role;
 import com.piseth.schoolapi.roles.RoleService;
-import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.mapstruct.Named;
 
 import java.util.List;
 
-@Mapper
+@Mapper(
+        componentModel = "spring",
+        uses = {RoleService.class, UserService.class}
+)
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     @Mappings({
-            @Mapping(source = "roleIds", target = "roles", qualifiedByName = "roleIdsToRoles")
+            @Mapping(source = "roleIds", target = "roles")
     })
-    User toUser(UserDTO userDTO, @Context RoleService roleService);
+    User toUser(UserDTO userDTO);
 
-    @Named("roleIdsToRoles")
-    default List<Role> roleIdsToRoles(List<Long> roleIds, @Context RoleService roleService) {
-        return roleService.findRoleByIds(roleIds);
+    @Mappings({
+            @Mapping(source = "roles", target = "roleIds", qualifiedByName = "rolesToRoleIds")
+    })
+    UserDTO toUserDTO(User user);
+
+    @Named("rolesToRoleIds")
+    default List<Long> rolesToRoleIds(List<Role> roles) {
+        return roles.stream().map(Role::getId).toList();
+
     }
+
 }
