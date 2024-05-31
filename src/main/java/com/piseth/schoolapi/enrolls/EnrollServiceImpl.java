@@ -11,6 +11,7 @@ import com.piseth.schoolapi.promotion.Promotion;
 import com.piseth.schoolapi.promotion.PromotionService;
 import com.piseth.schoolapi.students.Student;
 import com.piseth.schoolapi.students.StudentService;
+import com.piseth.schoolapi.utils.CourseUtil;
 import com.piseth.schoolapi.utils.EnrollUtil;
 import com.piseth.schoolapi.utils.PaymentUtil;
 import com.piseth.schoolapi.utils.PromotionUtil;
@@ -22,6 +23,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -32,97 +34,84 @@ public class EnrollServiceImpl implements EnrollService {
     private final EnrollMapper enrollMapper;
     private final PaymentRepository paymentRepository;
     private final PromotionService promotionService;
+
     private final EnrollUtil enrollUtil;
     private final PromotionUtil promotionUtil;
+    private final CourseUtil courseUtil;
 
     @Override
     public List<EnrollDTO> create(EnrollRequest enrollRequest) {
+        Enroll enroll = enrollMapper.reqtoEnroll(enrollRequest);
 
-        //Mapping enroll
-        List<EnrollDTO> listEnrollDTO = enrollRequest.getCourseIds().stream()
-                .map(courseId -> EnrollDTO.builder()
-                        .studentId(enrollRequest.getStudentId())
-                        .courseId(courseId)
-                        .enrollDate(enrollRequest.getEnrollDate())
-                        .build()
-                ).toList();
+        Student student = enroll.getStudent();
 
-        //mapping dto to enroll
-        List<Enroll> enrolls = enrollMapper.toEnrollList(listEnrollDTO);
-
-        Student student = enrolls.get(0).getStudent();
-
-        List<String> errors = new ArrayList<>();
-        List<Enroll> savedEnroll = new ArrayList<>();
-        List<Enroll> newEnroll = new ArrayList<>();
-        List<Course> courseEnroll = new ArrayList<>();
-
-
-        for (Enroll enroll : enrolls) {
-            Course course = enroll.getCourse();
-
-            String error = enrollUtil.checkStudentEnrollTheCourse(student.getId(), course.getId());
-            if (error != null) {
-                errors.add(error);
-                continue;
-            }
-
-            courseEnroll.add(course);
-
-            BigDecimal coursePrice = enrollUtil.checkCoursePrice(student.getStudentType(), course);
-
-            enroll.setPrice(coursePrice);
-            enroll.setRemain(coursePrice);
-            enroll.setPaymentStatus(PaymentStatus.UNPAID);
-            savedEnroll.add(enroll);
-        }
-
+        List<String> errors = validateStudentEnrolledTheCourses(student.getId(), enrollRequest.getCourseIds());
         if (!errors.isEmpty()) {
             throw new ApiException(String.join(";", errors), HttpStatus.BAD_REQUEST);
         }
 
-        //apply for promotion
-        Promotion promotion = promotionService.getById(enrollRequest.getPromotionId());
-        if (promotion != null) {
-             promotionUtil.applyPromotion(enrollRequest, student, savedEnroll, promotion);
-        }
-        // savedEnroll updated in promotion util
-        //---------------------------------
+        //create enrolls entity
+        List<Enroll> enrolls = enrollRequest.getCourseIds().stream()
+                .map(courseId -> {
+                    Course course = courseService.getById(courseId);
+                    BigDecimal coursePrice = courseUtil.checkCoursePrice(student.getStudentType(), course);
 
+                    return Enroll.builder()
+                            .price(coursePrice)
+                            .remain(coursePrice)
+                            .student(student)
+                            .course(course)
+                            .paymentStatus(PaymentStatus.UNPAID)
+                            .enrollDate(enrollRequest.getEnrollDate())
+                            .build();
+                }).toList();
 
-        //if no error => create enroll and payment
-        for (Enroll enroll : savedEnroll) {
+        List<Enroll> enrollList = new ArrayList<>(enrolls);
 
-            BigDecimal cashback = BigDecimal.ZERO;
-            enroll = enrollRepository.save(enroll);
-
-            //have amount => make payment
-            if (BigDecimal.ZERO.compareTo(enrollRequest.getAmount()) != 0) {
-
-                Payment payment = Payment.builder()
-                        .enroll(enroll)
-                        .amount(enrollRequest.getAmount())
-                        .paymentType(enrollRequest.getPaymentType())
-                        .paymentDate(LocalDate.from(enrollRequest.getEnrollDate()))
-                        .build();
-
-                cashback = PaymentUtil.makePayment(payment, enroll);
-
-                //save payment
-                paymentRepository.save(payment);
-                //update enroll
-                enroll = enrollRepository.save(enroll);
-
-
-                //update amount
-                enrollRequest.setAmount(cashback);
+        if (enrollRequest.getPromotionId() != null) {
+            Promotion promotion = promotionService.getById(enrollRequest.getPromotionId());
+            if (promotion != null) {
+                promotionUtil.applyPromotion(enrollRequest, student, enrollList, promotion);
             }
-
-            newEnroll.add(enroll);
         }
 
-        return newEnroll.stream().
+        //save enroll
+        enrollList = enrollRepository.saveAll(enrollList);
+
+
+        // make payment
+        BigDecimal amount = enrollRequest.getAmount();
+        if (amount != null && amount.compareTo(BigDecimal.ZERO) > 0) {
+            for (Enroll enr : enrollList) {
+
+                if (amount.compareTo(BigDecimal.ZERO) > 0) {
+                    Payment payment = Payment.builder()
+                            .enroll(enr)
+                            .amount(amount)
+                            .paymentType(enrollRequest.getPaymentType())
+                            .paymentDate(LocalDate.from(enr.getEnrollDate()))
+                            .build();
+
+                    //save payment
+                    payment = paymentRepository.save(payment);
+
+                    //update enroll payment status and remain
+                    //update amount
+                    amount = enrollUtil.updateEnrollPaymentStatusAndRemain(enr, payment);
+
+                }
+            }
+        }
+
+        return enrollList.stream().
                 map(enrollMapper::toEnrollDTO)
+                .toList();
+    }
+
+    private List<String> validateStudentEnrolledTheCourses(Long studentId, List<Long> courseIds) {
+        return courseIds.stream()
+                .map(courseId -> enrollUtil.checkStudentEnrollTheCourse(studentId, courseId))
+                .filter(Objects::nonNull)
                 .toList();
     }
 

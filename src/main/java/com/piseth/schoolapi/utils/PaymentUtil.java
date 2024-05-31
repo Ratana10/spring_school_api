@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class PaymentUtil {
 
+
     public static BigDecimal makePayment(Payment payment, Enroll enroll) {
         BigDecimal amount = payment.getAmount();
         BigDecimal remain = enroll.getRemain();
@@ -34,4 +35,6 @@ public class PaymentUtil {
 
         return cashback;
     }
+
+
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,7 +28,9 @@ public class PromotionUtil {
 
         if (validDate && validCourse) {
             if (!promotion.getPromotionCourses().isEmpty()) {
-                applyCoursePromotion(request, student, enrolls, promotion);
+                List<Enroll> freeEnrolls = applyCoursePromotion(request, student, promotion);
+                enrolls.addAll(freeEnrolls);
+
             } else if (promotion.getDiscountAmount().compareTo(BigDecimal.ZERO) != 0) {
                 applyDiscountAmountPromotion(enrolls, promotion.getDiscountAmount());
 
@@ -58,27 +61,22 @@ public class PromotionUtil {
         }
     }
 
-    private void applyCoursePromotion(EnrollRequest request, Student student, List<Enroll> enrolls, Promotion promotion) {
+    private List<Enroll> applyCoursePromotion(EnrollRequest request, Student student, Promotion promotion) {
 
-        for (Course course : promotion.getPromotionCourses()) {
-            String error = enrollUtil.checkStudentEnrollTheCourse(student.getId(), course.getId());
-
-            if (error != null) {
-                continue;
-            }
-
-            Enroll freeEnroll = Enroll.builder()
-                    .student(student)
-                    .course(course)
-                    .price(BigDecimal.ZERO)
-                    .remain(BigDecimal.ZERO)
-                    .paymentStatus(PaymentStatus.PAID)
-                    .enrollDate(request.getEnrollDate())
-                    .build();
-
-            enrolls.add(freeEnroll);
-
-        }
+        return promotion.getPromotionCourses().stream()
+                .map(proCourse -> {
+                    String error = enrollUtil.checkStudentEnrollTheCourse(student.getId(), proCourse.getId());
+                    if(error != null) return null;
+                    return Enroll.builder()
+                            .price(BigDecimal.ZERO)
+                            .remain(BigDecimal.ZERO)
+                            .student(student)
+                            .course(proCourse)
+                            .paymentStatus(PaymentStatus.PAID)
+                            .enrollDate(request.getEnrollDate())
+                            .build();
+                })
+                .toList();
     }
 
     private BigDecimal calculateAmount(BigDecimal price, BigDecimal discountValue) {

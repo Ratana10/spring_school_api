@@ -24,6 +24,9 @@ public interface EnrollMapper {
     @Mapping(source = "course.id", target = "courseId")
     EnrollDTO toEnrollDTO(Enroll enroll);
 
+    @Mapping(source = "studentId", target = "student")
+    Enroll reqtoEnroll(EnrollRequest enrollRequest);
+
     default List<Enroll> toEnrollList(List<EnrollDTO> enrollDTOS){
         return enrollDTOS.stream()
                 .map(this::toEnroll)

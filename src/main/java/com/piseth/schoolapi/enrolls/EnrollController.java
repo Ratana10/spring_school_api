@@ -19,7 +19,7 @@ public class EnrollController {
     private final EnrollService enrollService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse> createMultipleTest(@RequestBody EnrollRequest enrollRequest) {
+    public ResponseEntity<ApiResponse> create(@RequestBody EnrollRequest enrollRequest) {
 
         List<EnrollDTO> enrollDTOList = enrollService.create(enrollRequest);
 

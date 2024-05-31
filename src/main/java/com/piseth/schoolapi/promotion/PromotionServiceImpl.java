@@ -37,7 +37,7 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     public Promotion getById(Long id) {
         return promotionRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Promotion", id));
+                .orElse(null);
     }
 
     @Override
