@@ -1,7 +1,5 @@
 package com.piseth.schoolapi.payments;
 
-import com.piseth.schoolapi.enrolls.Enroll;
-import com.piseth.schoolapi.enrolls.EnrollDTO;
 import com.piseth.schoolapi.exception.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

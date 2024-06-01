@@ -5,10 +5,6 @@ import com.piseth.schoolapi.courses.Course;
 import com.piseth.schoolapi.courses.CourseMapper;
 import com.piseth.schoolapi.courses.CourseResponse;
 import com.piseth.schoolapi.enrollment.EnrollmentService;
-import com.piseth.schoolapi.enrolls.Enroll;
-import com.piseth.schoolapi.enrolls.EnrollDTO;
-import com.piseth.schoolapi.enrolls.EnrollMapper;
-import com.piseth.schoolapi.enrolls.EnrollService;
 import com.piseth.schoolapi.exception.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,9 +19,7 @@ import java.util.List;
 public class StudentController {
 
     private final StudentService studentService;
-    private final EnrollService enrollService;
     private final EnrollmentService enrollmentService;
-    private final EnrollMapper  enrollMapper;
     private final CourseMapper courseMapper;
 
     @PostMapping
@@ -105,25 +99,6 @@ public class StudentController {
                 .body(response);
     }
 
-    @GetMapping("{id}/enrolls")
-    public ResponseEntity<?> getStudentEnrollCourses(@PathVariable Long id) {
-        List<Enroll> enrollByStudentId = enrollService.getEnrollByStudentId(id);
-        System.out.println(enrollByStudentId);
-
-        List<EnrollDTO> enrollDTOList  = enrollByStudentId.stream()
-                .map(enrollMapper::toEnrollDTO)
-                .toList();
-
-        ApiResponse response = ApiResponse.builder()
-                .data(enrollDTOList)
-                .message("get enrolled by student id successful")
-                .httpStatus(HttpStatus.OK.value())
-                .build();
-
-        return ResponseEntity
-                .ok()
-                .body(response);
-    }
 
     @GetMapping("{studentId}/enrollments/courses")
     public ResponseEntity<?> getStudentEnrollmentCourses(@PathVariable Long studentId) {

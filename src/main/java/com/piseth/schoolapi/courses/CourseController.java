@@ -1,10 +1,6 @@
 package com.piseth.schoolapi.courses;
 
 
-import com.piseth.schoolapi.enrolls.Enroll;
-import com.piseth.schoolapi.enrolls.EnrollDTO;
-import com.piseth.schoolapi.enrolls.EnrollMapper;
-import com.piseth.schoolapi.enrolls.EnrollService;
 import com.piseth.schoolapi.exception.ApiResponse;
 import com.piseth.schoolapi.schedules.Schedule;
 import com.piseth.schoolapi.schedules.ScheduleDTO;
@@ -23,8 +19,6 @@ import java.util.List;
 public class CourseController {
 
     private final CourseService courseService;
-    private final EnrollMapper enrollMapper;
-    private final EnrollService enrollService;
 
     private final ScheduleService scheduleService;
     private final ScheduleMapper scheduleMapper;
@@ -107,25 +101,6 @@ public class CourseController {
                 .body(response);
     }
 
-    // to see course enrolled by students
-    @GetMapping("{courseId}/enrolls")
-    public ResponseEntity<ApiResponse> getCourseEnroll(@PathVariable Long courseId) {
-        List<Enroll> enrollByCourseId = enrollService.getEnrollByCourseId(courseId);
-
-        List<EnrollDTO> courseDTOList = enrollByCourseId.stream()
-                .map(enrollMapper::toEnrollDTO)
-                .toList();
-
-        ApiResponse response = ApiResponse.builder()
-                .data(courseDTOList)
-                .message("get enroll course successful")
-                .httpStatus(HttpStatus.OK.value())
-                .build();
-
-        return ResponseEntity
-                .ok()
-                .body(response);
-    }
 
     @GetMapping("{courseId}/schedules")
     public ResponseEntity<ApiResponse> getCourseSchedule(@PathVariable Long courseId) {

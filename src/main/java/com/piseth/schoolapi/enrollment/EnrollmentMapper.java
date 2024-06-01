@@ -2,16 +2,12 @@ package com.piseth.schoolapi.enrollment;
 
 import com.piseth.schoolapi.courses.Course;
 import com.piseth.schoolapi.courses.CourseService;
-import com.piseth.schoolapi.enrolls.Enroll;
-import com.piseth.schoolapi.enrolls.EnrollDTO;
-import com.piseth.schoolapi.enrolls.EnrollRequest;
-import com.piseth.schoolapi.promotion.Promotion;
-import com.piseth.schoolapi.promotion.PromotionService;
 import com.piseth.schoolapi.students.StudentService;
-import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.mapstruct.Named;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
