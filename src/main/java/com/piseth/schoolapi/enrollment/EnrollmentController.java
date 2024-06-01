@@ -1,7 +1,5 @@
 package com.piseth.schoolapi.enrollment;
 
-import com.piseth.schoolapi.enrolls.EnrollDTO;
-import com.piseth.schoolapi.enrolls.EnrollRequest;
 import com.piseth.schoolapi.exception.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,10 +18,10 @@ public class EnrollmentController {
     @PostMapping
     public ResponseEntity<ApiResponse> create(@RequestBody EnrollmentDTO enrollmentDTO) {
 
-        List<EnrollmentDTO> enrollmentDTOS = enrollmentService.create(enrollmentDTO);
+        enrollmentDTO = enrollmentService.create(enrollmentDTO);
 
         ApiResponse response = ApiResponse.builder()
-                .data(enrollmentDTOS)
+                .data(enrollmentDTO)
                 .message("create enrollment successful")
                 .httpStatus(HttpStatus.CREATED.value())
                 .build();
@@ -40,6 +38,21 @@ public class EnrollmentController {
         ApiResponse response = ApiResponse.builder()
                 .data(null)
                 .message("delete enrollment successful")
+                .httpStatus(HttpStatus.OK.value())
+                .build();
+
+        return ResponseEntity
+                .ok()
+                .body(response);
+    }
+
+    @GetMapping("/test/{id}")
+    public ResponseEntity<ApiResponse> testMethod(@PathVariable Long id) {
+        enrollmentService.getCourseEnrollmentByStudentId(id);
+
+        ApiResponse response = ApiResponse.builder()
+                .data(null)
+                .message("test enrollment successful")
                 .httpStatus(HttpStatus.OK.value())
                 .build();
 

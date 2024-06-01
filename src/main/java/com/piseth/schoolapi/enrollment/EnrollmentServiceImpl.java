@@ -6,6 +6,7 @@ import com.piseth.schoolapi.payments.PaymentService;
 import com.piseth.schoolapi.payments.PaymentStatus;
 import com.piseth.schoolapi.promotion.Promotion;
 import com.piseth.schoolapi.promotion.PromotionService;
+import com.piseth.schoolapi.students.StudentService;
 import com.piseth.schoolapi.utils.CourseUtil;
 import com.piseth.schoolapi.utils.PromotionUtil2;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     private final PromotionService promotionService;
     private final PaymentService paymentService;
+    private final StudentService studentService;
 
     private final CourseUtil courseUtil;
     private final PromotionUtil2 promotionUtil2;
@@ -34,7 +36,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
 
     @Override
-    public List<EnrollmentDTO> create(EnrollmentDTO enrollmentDTO) {
+    public EnrollmentDTO create(EnrollmentDTO enrollmentDTO) {
         Enrollment enrollment = enrollmentMapper.toEnrollment(enrollmentDTO);
 
         //Check is student enrollment the courses
@@ -74,7 +76,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         }
 
-        return null;
+        return enrollmentMapper.toEnrollmentDTO(enrollment);
     }
 
     @Override
@@ -104,6 +106,15 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Override
     public List<Enrollment> findStudentIdAndCourseIds(Long studentId, Set<Long> courseIds) {
         return enrollmentRepo.findByStudentIdAndCourseIds(studentId, courseIds);
+    }
+
+    @Override
+    public List<Enrollment> getCourseEnrollmentByStudentId(Long studentId) {
+        //search student
+        studentService.getById(studentId);
+        List<Enrollment> byStudentId = enrollmentRepo.findByStudentId(studentId);
+
+        return null;
     }
 
 }

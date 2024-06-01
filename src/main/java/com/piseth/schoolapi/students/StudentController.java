@@ -1,6 +1,8 @@
 package com.piseth.schoolapi.students;
 
 
+import com.piseth.schoolapi.enrollment.Enrollment;
+import com.piseth.schoolapi.enrollment.EnrollmentService;
 import com.piseth.schoolapi.enrolls.Enroll;
 import com.piseth.schoolapi.enrolls.EnrollDTO;
 import com.piseth.schoolapi.enrolls.EnrollMapper;
@@ -12,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/students")
@@ -21,6 +22,7 @@ public class StudentController {
 
     private final StudentService studentService;
     private final EnrollService enrollService;
+    private final EnrollmentService enrollmentService;
     private final EnrollMapper  enrollMapper;
 
     @PostMapping
@@ -111,6 +113,21 @@ public class StudentController {
 
         ApiResponse response = ApiResponse.builder()
                 .data(enrollDTOList)
+                .message("get enrolled by student id successful")
+                .httpStatus(HttpStatus.OK.value())
+                .build();
+
+        return ResponseEntity
+                .ok()
+                .body(response);
+    }
+
+    @GetMapping("{studentId}/enrollments")
+    public ResponseEntity<?> getStudentEnrollmentCourses(@PathVariable Long studentId) {
+        List<Enrollment> enrollmentByStudentId = enrollmentService.getCourseEnrollmentByStudentId(studentId);
+
+        ApiResponse response = ApiResponse.builder()
+                .data(enrollmentByStudentId)
                 .message("get enrolled by student id successful")
                 .httpStatus(HttpStatus.OK.value())
                 .build();
