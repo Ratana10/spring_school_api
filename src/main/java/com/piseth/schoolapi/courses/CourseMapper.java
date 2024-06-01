@@ -1,10 +1,10 @@
 package com.piseth.schoolapi.courses;
 
 import com.piseth.schoolapi.categories.Category;
-import com.piseth.schoolapi.categories.CategoryDTO;
 import com.piseth.schoolapi.studytypes.StudyType;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(
@@ -20,4 +20,10 @@ public interface CourseMapper {
     @Mapping(source = "studyType.id", target = "studyTypeId")
     @Mapping(source = "category.id", target = "categoryId")
     CourseDTO toCourseDTO(Course course);
+
+    @Mappings({
+            @Mapping(source = "name", target = "name"),
+            @Mapping(source = "description", target = "description")
+    })
+    CourseResponse toCourseResponse(Course course);
 }
