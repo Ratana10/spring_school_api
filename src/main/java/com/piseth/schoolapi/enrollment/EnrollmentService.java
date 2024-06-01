@@ -3,6 +3,7 @@ package com.piseth.schoolapi.enrollment;
 import com.piseth.schoolapi.enrolls.Enroll;
 import com.piseth.schoolapi.enrolls.EnrollDTO;
 import com.piseth.schoolapi.enrolls.EnrollRequest;
+import com.piseth.schoolapi.payments.PaymentStatus;
 
 import java.util.List;
 import java.util.Set;
@@ -15,4 +16,5 @@ public interface EnrollmentService {
 
     Enrollment findStudentIdAndCourseId(Long studentId, Long courseId);
     List<Enrollment> findStudentIdAndCourseIds(Long studentId, Set<Long> courseIds);
+    Enrollment updatePaymentStatus(Long enrollmentId, PaymentStatus paymentStatus);
 }
