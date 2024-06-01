@@ -1,7 +1,9 @@
 package com.piseth.schoolapi.students;
 
 
-import com.piseth.schoolapi.enrollment.Enrollment;
+import com.piseth.schoolapi.courses.Course;
+import com.piseth.schoolapi.courses.CourseMapper;
+import com.piseth.schoolapi.courses.CourseResponse;
 import com.piseth.schoolapi.enrollment.EnrollmentService;
 import com.piseth.schoolapi.enrolls.Enroll;
 import com.piseth.schoolapi.enrolls.EnrollDTO;
@@ -24,6 +26,7 @@ public class StudentController {
     private final EnrollService enrollService;
     private final EnrollmentService enrollmentService;
     private final EnrollMapper  enrollMapper;
+    private final CourseMapper courseMapper;
 
     @PostMapping
     public ResponseEntity<ApiResponse> create(@RequestBody StudentDTO dto) {
@@ -122,13 +125,16 @@ public class StudentController {
                 .body(response);
     }
 
-    @GetMapping("{studentId}/enrollments")
+    @GetMapping("{studentId}/enrollments/courses")
     public ResponseEntity<?> getStudentEnrollmentCourses(@PathVariable Long studentId) {
-        List<Enrollment> enrollmentByStudentId = enrollmentService.getCourseEnrollmentByStudentId(studentId);
+        List<Course> enrollmentCourses = enrollmentService.getCourseEnrollmentByStudentId(studentId);
 
+        List<CourseResponse> list = enrollmentCourses.stream()
+                .map(courseMapper::toCourseResponse)
+                .toList();
         ApiResponse response = ApiResponse.builder()
-                .data(enrollmentByStudentId)
-                .message("get enrolled by student id successful")
+                .data(list)
+                .message("get enrollment courses by student id successful")
                 .httpStatus(HttpStatus.OK.value())
                 .build();
 

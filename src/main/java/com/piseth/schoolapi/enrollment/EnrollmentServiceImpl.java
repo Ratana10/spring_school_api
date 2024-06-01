@@ -1,5 +1,6 @@
 package com.piseth.schoolapi.enrollment;
 
+import com.piseth.schoolapi.courses.Course;
 import com.piseth.schoolapi.exception.ResourceNotFoundException;
 import com.piseth.schoolapi.payments.Payment;
 import com.piseth.schoolapi.payments.PaymentService;
@@ -109,12 +110,16 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public List<Enrollment> getCourseEnrollmentByStudentId(Long studentId) {
+    public List<Course> getCourseEnrollmentByStudentId(Long studentId) {
         //search student
         studentService.getById(studentId);
-        List<Enrollment> byStudentId = enrollmentRepo.findByStudentId(studentId);
+        List<Enrollment> enrollmentsById = enrollmentRepo.findByStudentId(studentId);
+        List<Course> list = enrollmentsById.stream()
+                .flatMap(enr -> enr.getCourses().stream())
+                .distinct()
+                .toList();
 
-        return null;
+        return list;
     }
 
 }
