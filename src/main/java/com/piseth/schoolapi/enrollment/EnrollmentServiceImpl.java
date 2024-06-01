@@ -1,6 +1,7 @@
 package com.piseth.schoolapi.enrollment;
 
 import com.piseth.schoolapi.exception.ResourceNotFoundException;
+import com.piseth.schoolapi.payments.Payment;
 import com.piseth.schoolapi.payments.PaymentStatus;
 import com.piseth.schoolapi.promotion.Promotion;
 import com.piseth.schoolapi.promotion.PromotionService;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -26,6 +28,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final CourseUtil courseUtil;
     private final PromotionUtil2 promotionUtil2;
     private final EnrollmentUtil enrollmentUtil;
+    private final PaymentUtil2 paymentUtil2;
+
 
     @Override
     public List<EnrollmentDTO> create(EnrollmentDTO enrollmentDTO) {
@@ -35,13 +39,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         enrollmentUtil.isStudentEnrollmentTheCourses(enrollment.getStudent(), enrollmentDTO.getCourseIds());
 
         //Calculate total course
-        BigDecimal amount = enrollment.getCourses().stream()
+        BigDecimal total = enrollment.getCourses().stream()
                 .map(cou -> courseUtil.checkCoursePrice(enrollment.getStudent().getStudentType(), cou))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         enrollment.setPaymentStatus(PaymentStatus.UNPAID);
-        enrollment.setAmount(amount);
-        enrollment.setRemain(amount);
+        enrollment.setAmount(total);
+        enrollment.setRemain(total);
 
         //check and apply promotion
         if (enrollmentDTO.getPromotionId() != null) {
@@ -53,6 +57,20 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         // save the enrollment
         enrollmentRepo.save(enrollment);
+
+        BigDecimal cashback = BigDecimal.ZERO;
+        //check and apply payment
+        if (enrollmentDTO.getAmount() != null
+                && enrollmentDTO.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+
+            cashback = paymentUtil2.makePayment(
+                    enrollment,
+                    enrollmentDTO.getAmount(),
+                    enrollmentDTO.getPaymentType(),
+                    LocalDate.from(enrollmentDTO.getEnrollDate())
+            );
+
+        }
 
         return null;
     }
@@ -78,5 +96,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Override
     public List<Enrollment> findStudentIdAndCourseIds(Long studentId, Set<Long> courseIds) {
         return enrollmentRepo.findByStudentIdAndCourseIds(studentId, courseIds);
+    }
+
+    @Override
+    public Enrollment updatePaymentStatus(Long enrollmentId, PaymentStatus paymentStatus) {
+//        Enrollment byId = getById(enrollmentId);
+//        byId.setPaymentStatus(paymentStatus);
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package com.piseth.schoolapi.payments;
 
+import com.piseth.schoolapi.enrollment.Enrollment;
 import com.piseth.schoolapi.enrolls.Enroll;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,4 +38,7 @@ public class Payment {
     @Column(name = "pay_date")
     private LocalDate paymentDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "enrollment_id")
+    private Enrollment enrollment;
 }
