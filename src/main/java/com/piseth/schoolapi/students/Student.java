@@ -1,11 +1,7 @@
 package com.piseth.schoolapi.students;
 
-import com.piseth.schoolapi.enrolls.Enroll;
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity

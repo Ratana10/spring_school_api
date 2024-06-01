@@ -1,7 +1,6 @@
 package com.piseth.schoolapi.payments;
 
 import com.piseth.schoolapi.enrollment.Enrollment;
-import com.piseth.schoolapi.enrolls.Enroll;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -26,10 +24,6 @@ public class Payment {
 
     @Column(name = "pay_amount")
     private BigDecimal amount;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "enr_id")
-    private Enroll enroll;
 
     @Column(name = "pay_type")
     @Enumerated(EnumType.STRING)

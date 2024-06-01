@@ -1,7 +1,7 @@
-package com.piseth.schoolapi.enrollment;
+package com.piseth.schoolapi.utils;
 
-import com.piseth.schoolapi.enrolls.EnrollRepository;
-import com.piseth.schoolapi.enrolls.EnrollService;
+import com.piseth.schoolapi.enrollment.Enrollment;
+import com.piseth.schoolapi.enrollment.EnrollmentRepository;
 import com.piseth.schoolapi.payments.Payment;
 import com.piseth.schoolapi.payments.PaymentRepository;
 import com.piseth.schoolapi.payments.PaymentStatus;
@@ -23,31 +23,28 @@ public class PaymentUtil2 {
             BigDecimal amount,
             PaymentType paymentType,
             LocalDate date
-    ){
+    ) {
 
         BigDecimal cashback = BigDecimal.ZERO;
         BigDecimal remain = enrollment.getRemain();
 
-        if(amount.compareTo(remain) < 0){
+        if (amount.compareTo(remain) < 0) {
             remain = remain.subtract(amount);
 
             enrollment.setPaymentStatus(PaymentStatus.PARTIAL);
             enrollment.setRemain(remain);
-        }
-
-        else if(amount.compareTo(remain) > 0){
+        } else if (amount.compareTo(remain) > 0) {
             cashback = amount.subtract(remain);
 
             enrollment.setPaymentStatus(PaymentStatus.PAID);
             enrollment.setRemain(BigDecimal.ZERO);
-        }else{
+        } else {
             enrollment.setPaymentStatus(PaymentStatus.PAID);
             enrollment.setRemain(BigDecimal.ZERO);
         }
 
         Payment payment = Payment.builder()
                 .amount(amount)
-                .enroll(null)
                 .enrollment(enrollment)
                 .paymentType(paymentType)
                 .paymentDate(date)
