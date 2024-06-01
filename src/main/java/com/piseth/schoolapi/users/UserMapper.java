@@ -9,10 +9,7 @@ import org.mapstruct.Named;
 
 import java.util.List;
 
-@Mapper(
-        componentModel = "spring",
-        uses = {RoleService.class, UserService.class}
-)
+
 public interface UserMapper {
 
     @Mappings({
