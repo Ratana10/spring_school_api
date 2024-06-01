@@ -16,5 +16,4 @@ public interface EnrollmentService {
 
     Enrollment findStudentIdAndCourseId(Long studentId, Long courseId);
     List<Enrollment> findStudentIdAndCourseIds(Long studentId, Set<Long> courseIds);
-    Enrollment updatePaymentStatus(Long enrollmentId, PaymentStatus paymentStatus);
 }

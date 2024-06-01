@@ -2,6 +2,7 @@ package com.piseth.schoolapi.enrollment;
 
 import com.piseth.schoolapi.exception.ResourceNotFoundException;
 import com.piseth.schoolapi.payments.Payment;
+import com.piseth.schoolapi.payments.PaymentService;
 import com.piseth.schoolapi.payments.PaymentStatus;
 import com.piseth.schoolapi.promotion.Promotion;
 import com.piseth.schoolapi.promotion.PromotionService;
@@ -24,6 +25,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final EnrollmentRepository enrollmentRepo;
 
     private final PromotionService promotionService;
+    private final PaymentService paymentService;
 
     private final CourseUtil courseUtil;
     private final PromotionUtil2 promotionUtil2;
@@ -78,6 +80,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Override
     public void delete(Long id) {
         getById(id);
+
+        paymentService.findByEnrollmentId(id)
+                .stream()
+                .map(Payment::getId)
+                .forEach(paymentService::delete);
+
         enrollmentRepo.deleteById(id);
     }
 
@@ -98,10 +106,4 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return enrollmentRepo.findByStudentIdAndCourseIds(studentId, courseIds);
     }
 
-    @Override
-    public Enrollment updatePaymentStatus(Long enrollmentId, PaymentStatus paymentStatus) {
-//        Enrollment byId = getById(enrollmentId);
-//        byId.setPaymentStatus(paymentStatus);
-        return null;
-    }
 }
