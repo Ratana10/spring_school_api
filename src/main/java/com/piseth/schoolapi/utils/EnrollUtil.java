@@ -8,11 +8,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
 public class EnrollUtil {
     private final EnrollRepository enrollRepository;
+
+    public List<String> validateStudentEnrolledTheCourses(Long studentId, Set<Long> courseIds) {
+        return courseIds.stream()
+                .map(courseId -> checkStudentEnrollTheCourse(studentId, courseId))
+                .filter(Objects::nonNull)
+                .toList();
+    }
 
     public String checkStudentEnrollTheCourse(Long studentId, Long courseId) {
         //check student enrolled
