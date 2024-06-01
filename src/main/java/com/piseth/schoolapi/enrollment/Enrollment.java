@@ -54,8 +54,4 @@ public class Enrollment {
     @Column(name = "enr_date")
     private LocalDateTime enrollDate;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "pro_id")
-//    private Promotion promotion;
-
 }
