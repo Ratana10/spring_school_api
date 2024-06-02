@@ -1,50 +1,51 @@
 package com.piseth.schoolapi.auth;
 
 import com.piseth.schoolapi.config.jwt.JwtService;
-import com.piseth.schoolapi.roles.RoleEnum;
+import com.piseth.schoolapi.users.RoleEnum;
 import com.piseth.schoolapi.users.User;
 import com.piseth.schoolapi.users.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthenticationResponse register(RegisterRequest request){
+    public AuthResponse register(RegisterRequest request) {
         var user = User.builder()
                 .firstName(request.getFirstname())
-                .LastName(request.getLastname())
+                .lastName(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(RoleEnum.USER)
+                .role(RoleEnum.STUDENT)
                 .build();
 
         userRepository.save(user);
         var token = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
+        return AuthResponse.builder()
                 .token(token)
                 .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request){
+    public AuthResponse login(AuthRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getEmail(),
                 request.getPassword()
         ));
 
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(()-> new UsernameNotFoundException("user not found"));
 
         var token = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
+        return AuthResponse.builder()
                 .token(token)
                 .build();
     }
