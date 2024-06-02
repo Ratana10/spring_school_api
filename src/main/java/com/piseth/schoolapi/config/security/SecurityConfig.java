@@ -5,6 +5,8 @@ import com.piseth.schoolapi.users.RoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -39,7 +41,15 @@ public class SecurityConfig {
     };
 
     private final String[] ADMIN_LIST_URLs = {
-            "/api/student/{studentId}/courses", //View their enrollment courses
+            "/api/students/**",
+//            "/api/categories/**",
+            "/api/study-types/**",
+            "/api/schedule/**",
+            "/api/courses/**",
+            "/api/enrollments/**",
+            "/api/payments/**",
+            "/api/promotions/**",
+            "/api/users/**",
     };
 
 
@@ -51,16 +61,20 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(SWAGGER_LIST_URLs)
                         .permitAll()
-                        .requestMatchers("/api/categories/**")
+                        .requestMatchers(HttpMethod.POST,ADMIN_LIST_URLs)
+                        .hasRole(RoleEnum.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT,ADMIN_LIST_URLs)
+                        .hasRole(RoleEnum.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE,ADMIN_LIST_URLs)
+                        .hasRole(RoleEnum.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,ADMIN_LIST_URLs)
                         .hasRole(RoleEnum.ADMIN.name())
                         .anyRequest()
                         .authenticated()
                 )
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                . addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-
-
     }
 }

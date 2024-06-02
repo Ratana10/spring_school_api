@@ -1,5 +1,6 @@
 package com.piseth.schoolapi.users;
 
+import com.piseth.schoolapi.auditing.AuditingEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +19,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User implements UserDetails  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

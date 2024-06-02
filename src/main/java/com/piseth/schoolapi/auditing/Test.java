@@ -1,18 +1,18 @@
-package com.piseth.schoolapi.users;
+package com.piseth.schoolapi.auditing;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Set;
-
 @Data
 @Entity
-@Table(name = "roles")
-public class Role {
+@Table(name = "testing")
+public class Test extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cat_id")
     private Long id;
+
+    @Column(name = "cat_name")
     private String name;
-    @ManyToMany
-    private Set<Permission> permissions;
+
 }

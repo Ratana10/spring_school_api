@@ -4,4 +4,4 @@ databaseChangeLog:
       author: sanratana18@gmail.com
       changes:
         - sqlFile:
-              path: db/create/001_study_type.sql
+            path: db/data/0001_init_new_schema.sql

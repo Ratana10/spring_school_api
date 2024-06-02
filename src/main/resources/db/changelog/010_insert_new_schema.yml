@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 010_insert_new_schema
+      author: sanratana18@gmail.com
+      changes:
+        - sqlFile:
+            path: db/create/001_study_type.sql
+        - sqlFile:
+            path: db/create/002_categories.sql
+        - sqlFile:
+            path: db/create/003_course.sql
+        - sqlFile:
+            path: db/create/004_promotions.sql

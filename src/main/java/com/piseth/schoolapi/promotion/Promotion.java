@@ -1,5 +1,6 @@
 package com.piseth.schoolapi.promotion;
 
+import com.piseth.schoolapi.auditing.AuditingEntity;
 import com.piseth.schoolapi.courses.Course;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -12,7 +13,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "promotions")
-public class Promotion {
+public class Promotion extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pro_id")

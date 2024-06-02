@@ -1,5 +1,6 @@
 package com.piseth.schoolapi.schedules;
 
+import com.piseth.schoolapi.auditing.AuditingEntity;
 import com.piseth.schoolapi.courses.Course;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -11,9 +12,7 @@ import java.time.LocalTime;
 @Entity
 @Data
 @Table(name = "course_schedule")
-@SQLDelete(sql = "UPDATE course_schedule SET deleted = true WHERE id=?")
-@Where(clause = "deleted=false")
-public class Schedule {
+public class Schedule extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -32,8 +31,4 @@ public class Schedule {
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
-
-    @Column(name = "deleted")
-    private boolean deleted = Boolean.FALSE;
-
 }
