@@ -26,9 +26,14 @@ public class SecurityConfig {
             "/api/courses",
             "/api/courses/{id}",
             "/api/promotions",
-            "/swagger-ui/**",
     };
 
+    private final String[] SWAGGER_LIST_URLs = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/v2/api-docs/**",
+            "/swagger-resources/**"
+    };
     private final String[] STUDENT_LIST_URLs = {
             "/api/student/{studentId}/courses", //View their enrollment courses
     };
@@ -43,6 +48,8 @@ public class SecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(WHITE_LIST_URLs)
+                        .permitAll()
+                        .requestMatchers(SWAGGER_LIST_URLs)
                         .permitAll()
                         .requestMatchers("/api/categories/**")
                         .hasRole(RoleEnum.ADMIN.name())
