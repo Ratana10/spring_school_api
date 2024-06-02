@@ -5,6 +5,7 @@ import com.piseth.schoolapi.users.RoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,16 +28,28 @@ public class SecurityConfig {
             "/api/courses",
             "/api/courses/{id}",
             "/api/promotions",
-            "/swagger-ui/**",
     };
 
+    private final String[] SWAGGER_LIST_URLs = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/v2/api-docs/**",
+            "/swagger-resources/**"
+    };
     private final String[] STUDENT_LIST_URLs = {
             "/api/student/{studentId}/courses", //View their enrollment courses
     };
 
     private final String[] ADMIN_LIST_URLs = {
-            "/api/student/{studentId}/courses",
-            "/api/student/{studentId}/courses",
+            "/api/students/**",
+//            "/api/categories/**",
+            "/api/study-types/**",
+            "/api/schedule/**",
+            "/api/courses/**",
+            "/api/enrollments/**",
+            "/api/payments/**",
+            "/api/promotions/**",
+            "/api/users/**",
     };
 
 
@@ -46,18 +59,22 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(WHITE_LIST_URLs)
                         .permitAll()
-                        .requestMatchers("/api/tests/**")
+                        .requestMatchers(SWAGGER_LIST_URLs)
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST,ADMIN_LIST_URLs)
                         .hasRole(RoleEnum.ADMIN.name())
-                        .requestMatchers("/api/categories/**")
+                        .requestMatchers(HttpMethod.PUT,ADMIN_LIST_URLs)
+                        .hasRole(RoleEnum.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE,ADMIN_LIST_URLs)
+                        .hasRole(RoleEnum.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,ADMIN_LIST_URLs)
                         .hasRole(RoleEnum.ADMIN.name())
                         .anyRequest()
                         .authenticated()
                 )
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                . addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-
-
     }
 }
