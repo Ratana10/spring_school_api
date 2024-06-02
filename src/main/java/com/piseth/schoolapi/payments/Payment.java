@@ -1,5 +1,6 @@
 package com.piseth.schoolapi.payments;
 
+import com.piseth.schoolapi.auditing.AuditingEntity;
 import com.piseth.schoolapi.enrollment.Enrollment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Data
 @Table(name = "payments")
-public class Payment {
+public class Payment extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pay_id")
