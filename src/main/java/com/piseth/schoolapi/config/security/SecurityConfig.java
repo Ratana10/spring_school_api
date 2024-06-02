@@ -5,6 +5,7 @@ import com.piseth.schoolapi.users.RoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -34,7 +35,8 @@ public class SecurityConfig {
     };
 
     private final String[] ADMIN_LIST_URLs = {
-            "/api/student/{studentId}/courses", //View their enrollment courses
+            "/api/student/{studentId}/courses",
+            "/api/student/{studentId}/courses",
     };
 
 
@@ -44,6 +46,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(WHITE_LIST_URLs)
                         .permitAll()
+                        .requestMatchers("/api/tests/**")
+                        .hasRole(RoleEnum.ADMIN.name())
                         .requestMatchers("/api/categories/**")
                         .hasRole(RoleEnum.ADMIN.name())
                         .anyRequest()
