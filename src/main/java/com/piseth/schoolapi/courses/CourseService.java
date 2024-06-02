@@ -1,6 +1,7 @@
 package com.piseth.schoolapi.courses;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -19,5 +20,7 @@ public interface CourseService {
 
     List<Course> getCourseByStudyTypeId(Long studyTypeId);
     Set<Course> findCoursesByIds(Set<Long> courseIds);
+    List<Course> getCourses(Map<String ,String > params);
+
 
 }

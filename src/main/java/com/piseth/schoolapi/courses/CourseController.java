@@ -7,11 +7,13 @@ import com.piseth.schoolapi.schedules.ScheduleDTO;
 import com.piseth.schoolapi.schedules.ScheduleMapper;
 import com.piseth.schoolapi.schedules.ScheduleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -87,11 +89,11 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse> getAll() {
-        List<Course> categories = courseService.getCourses();
+    public ResponseEntity<ApiResponse> getAll(@RequestParam Map<String , String > params) {
+        List<Course> courses = courseService.getCourses(params);
 
         ApiResponse response = ApiResponse.builder()
-                .data(categories)
+                .data(courses)
                 .message("get courses successful")
                 .httpStatus(HttpStatus.OK.value())
                 .build();

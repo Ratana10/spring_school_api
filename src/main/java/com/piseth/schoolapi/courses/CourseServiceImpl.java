@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -68,6 +69,24 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Set<Course> findCoursesByIds(Set<Long> courseIds) {
         return new HashSet<>(courseRepository.findAllById(courseIds));
+    }
+
+    @Override
+    public List<Course> getCourses(Map<String, String> params) {
+        CourseFilter courseFilter = new CourseFilter();
+
+        if(params.containsKey("id")){
+            String id = params.get("id");
+            courseFilter.setId(Long.parseLong(id));
+        }
+        if(params.containsKey("name")){
+            String name = params.get("name");
+            courseFilter.setName(name);
+        }
+
+        CourseSpec courseSpec = new CourseSpec(courseFilter);
+
+        return courseRepository.findAll(courseSpec);
     }
 
 }
