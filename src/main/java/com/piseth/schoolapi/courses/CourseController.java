@@ -6,6 +6,7 @@ import com.piseth.schoolapi.schedules.Schedule;
 import com.piseth.schoolapi.schedules.ScheduleDTO;
 import com.piseth.schoolapi.schedules.ScheduleMapper;
 import com.piseth.schoolapi.schedules.ScheduleService;
+import com.piseth.schoolapi.utils.PageDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
@@ -90,18 +91,12 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse> getAll(@RequestParam Map<String , String > params) {
+    public ResponseEntity<PageDTO> getAll(@RequestParam Map<String , String > params) {
         Page<Course> courses = courseService.getCourses(params);
-
-        ApiResponse response = ApiResponse.builder()
-                .data(courses)
-                .message("get courses successful")
-                .httpStatus(HttpStatus.OK.value())
-                .build();
 
         return ResponseEntity
                 .ok()
-                .body(response);
+                .body(new PageDTO(courses));
     }
 
 
