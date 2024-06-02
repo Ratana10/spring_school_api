@@ -3,6 +3,7 @@ package com.piseth.schoolapi;
 import com.piseth.schoolapi.config.jwt.JwtService;
 import com.piseth.schoolapi.studytypes.StudyType;
 import com.piseth.schoolapi.studytypes.StudyTypeRepository;
+import com.piseth.schoolapi.users.Role;
 import com.piseth.schoolapi.users.RoleEnum;
 import com.piseth.schoolapi.users.User;
 import com.piseth.schoolapi.users.UserRepository;
@@ -41,7 +42,7 @@ public class SchoolApiApplication {
 						.lastName("admin")
 						.email("admin@gmail.com")
 						.password(passwordEncoder.encode("admin123"))
-						.role(RoleEnum.ADMIN)
+						.role(Role.ADMIN)
 						.build();
 
 				var token = jwtService.generateToken(userRepo.save(admin));
@@ -55,7 +56,7 @@ public class SchoolApiApplication {
 						.lastName("user lastname")
 						.email("user@gmail.com")
 						.password(passwordEncoder.encode("user123"))
-						.role(RoleEnum.STUDENT)
+						.role(Role.STUDENT)
 						.build();
 
 				token = jwtService.generateToken(userRepo.save(user));

@@ -1,6 +1,7 @@
 package com.piseth.schoolapi.auth;
 
 import com.piseth.schoolapi.config.jwt.JwtService;
+import com.piseth.schoolapi.users.Role;
 import com.piseth.schoolapi.users.RoleEnum;
 import com.piseth.schoolapi.users.User;
 import com.piseth.schoolapi.users.UserRepository;
@@ -25,7 +26,7 @@ public class AuthServiceImpl implements AuthService {
                 .lastName(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(RoleEnum.STUDENT)
+                .role(Role.STUDENT)
                 .build();
 
         userRepository.save(user);

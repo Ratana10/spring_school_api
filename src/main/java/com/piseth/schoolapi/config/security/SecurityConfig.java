@@ -1,19 +1,22 @@
 package com.piseth.schoolapi.config.security;
 
 import com.piseth.schoolapi.config.jwt.JwtAuthFilter;
-import com.piseth.schoolapi.users.RoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Role;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static com.piseth.schoolapi.users.Permission.*;
+import static com.piseth.schoolapi.users.Role.ADMIN;
+import static com.piseth.schoolapi.users.Role.STUDENT;
 
 @EnableWebSecurity
 @Configuration
@@ -25,9 +28,9 @@ public class SecurityConfig {
     private final String[] WHITE_LIST_URLs = {
             "/api/auth/register",
             "/api/auth/login",
-            "/api/courses",
-            "/api/courses/{id}",
-            "/api/promotions",
+//            "/api/courses",
+//            "/api/courses/{id}",
+//            "/api/promotions",
     };
 
     private final String[] SWAGGER_LIST_URLs = {
@@ -61,14 +64,21 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(SWAGGER_LIST_URLs)
                         .permitAll()
-                        .requestMatchers(HttpMethod.POST,ADMIN_LIST_URLs)
-                        .hasRole(RoleEnum.ADMIN.name())
-                        .requestMatchers(HttpMethod.PUT,ADMIN_LIST_URLs)
-                        .hasRole(RoleEnum.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE,ADMIN_LIST_URLs)
-                        .hasRole(RoleEnum.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET,ADMIN_LIST_URLs)
-                        .hasRole(RoleEnum.ADMIN.name())
+
+                        .requestMatchers(HttpMethod.GET, "/api/courses").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/courses/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/promotions").permitAll()
+
+                        .requestMatchers("/api/students/**").hasAnyRole(STUDENT.name(), ADMIN.name())
+                        .requestMatchers(HttpMethod.GET, "/api/students/**").hasAuthority(STUDENT_READ.name())
+                        .requestMatchers(HttpMethod.POST, "/api/students/**").hasAuthority(STUDENT_WRITE.name())
+
+                        .requestMatchers("/api/categories").hasAnyRole(ADMIN.name())
+
+                        .requestMatchers("/api/study-types/**").hasRole(ADMIN.name())
+                        .requestMatchers(HttpMethod.GET, "/api/study-types/**").hasAuthority(STUDY_TYPE_READ.name())
+                        .requestMatchers(HttpMethod.POST, "/api/study-types/**").hasAuthority(STUDY_TYPE_READ.name())
+
                         .anyRequest()
                         .authenticated()
                 )

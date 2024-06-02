@@ -93,7 +93,7 @@ public class StudentController {
 
         ApiResponse response = ApiResponse.builder()
                 .data(categories)
-                .message("get categories successful")
+                .message("get student successful")
                 .httpStatus(HttpStatus.OK.value())
                 .build();
 

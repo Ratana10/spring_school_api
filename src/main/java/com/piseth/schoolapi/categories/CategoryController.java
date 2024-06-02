@@ -8,16 +8,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import static com.piseth.schoolapi.users.Role.*;
+import static com.piseth.schoolapi.users.Permission.*;
 
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+// @TODO config method seucrity
 public class CategoryController {
 
     private final CategoryService categoryService;
 
+    @PreAuthorize("hasAuthority('category:write')")
     @PostMapping
     public ResponseEntity<ApiResponse> create(@RequestBody CategoryDTO dto) {
         Category category = CategoryMapper.INSTANCE.toCategory(dto);
@@ -33,6 +35,8 @@ public class CategoryController {
                 .status(HttpStatus.CREATED)
                 .body(response);
     }
+
+    @PreAuthorize("hasAuthority('category:write')")
 
     @PutMapping("{id}")
     public ResponseEntity<ApiResponse> update(@PathVariable Long id, @RequestBody CategoryDTO dto) {
@@ -50,6 +54,7 @@ public class CategoryController {
                 .body(response);
     }
 
+    @PreAuthorize("hasAuthority('category:write')")
     @DeleteMapping("{id}")
     public ResponseEntity<ApiResponse> delete(@PathVariable Long id) {
         categoryService.delete(id);
@@ -64,6 +69,8 @@ public class CategoryController {
                 .ok()
                 .body(response);
     }
+
+    @PreAuthorize("hasAuthority('category:read')")
 
     @GetMapping("{id}")
     public ResponseEntity<ApiResponse> getById(@PathVariable Long id) {
@@ -80,6 +87,7 @@ public class CategoryController {
                 .body(response);
     }
 
+    @PreAuthorize("hasAuthority('category:read')")
     @GetMapping
     public ResponseEntity<ApiResponse> getAll() {
         List<Category> categories = categoryService.getCategories();
