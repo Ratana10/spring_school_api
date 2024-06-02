@@ -1,4 +1,4 @@
-package com.piseth.schoolapi.roles;
+package com.piseth.schoolapi.users;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -7,10 +7,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum PermissionEnum {
-    COURSE_WRITE("course:write"),
-    COURSE_READ("course:read"),
-    CATEGORY_WRITE("category:write"),
-    CATEGORY_READ("category:read");
+    BRAND_WRITE("brand:write"),
+    BRAND_READ("brand:read"),
+    MODEL_WRITE("model:write"),
+    MODEL_READ("model:read");
     private String description;
 
 }

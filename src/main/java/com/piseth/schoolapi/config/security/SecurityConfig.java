@@ -1,66 +1,50 @@
 package com.piseth.schoolapi.config.security;
 
-import com.piseth.schoolapi.config.jwt.JwtAuthenticationFilter;
-import com.piseth.schoolapi.roles.RoleEnum;
+import com.piseth.schoolapi.config.jwt.JwtAuthFilter;
+import com.piseth.schoolapi.users.RoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableMethodSecurity
+@EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final PasswordEncoder passwordEncoder;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
-    private final String[] UNSECURE_URLs= {
-            "/api/courses/**",
-            "/api/promotions/**"
+    private final JwtAuthFilter jwtAuthFilter;
+
+    private final String[] WHITE_LIST_URLs = {
+            "/api/auth/register",
+            "/api/auth/login",
+            "/api/courses",
+            "/api/courses/{id}",
+            "/api/promotions",
     };
 
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/courses/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/promotions/**").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/categories/**").hasRole(RoleEnum.ADMIN.name())
-                        .anyRequest().authenticated()
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(req -> req
+                        .requestMatchers(WHITE_LIST_URLs)
+                        .permitAll()
+                        .requestMatchers("/api/categories/**")
+                        .hasRole(RoleEnum.ADMIN.name())
+                        .anyRequest()
+                        .authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                . addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
 
-        return http.build();
+
     }
-
-//    @Bean
-//    public InMemoryUserDetailsManager userDetailsService(){
-//        UserDetails user1 = User.builder()
-//                .username("admin")
-//                .password(passwordEncoder.encode("admin"))
-//                .authorities(RoleEnum.ADMIN.getAuthorities())
-//                .build();
-//
-//        UserDetails user2 = User.builder()
-//                .username("dara")
-//                .password(passwordEncoder.encode("123"))
-//                .authorities(RoleEnum.USER.getAuthorities())
-//                .build();
-//        return new InMemoryUserDetailsManager(user1, user2);
-//    }
 }

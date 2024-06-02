@@ -1,7 +1,9 @@
-package com.piseth.schoolapi.roles;
+package com.piseth.schoolapi.users;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.Set;
 
 @Data
 @Entity
@@ -9,11 +11,8 @@ import lombok.Data;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
     private Long id;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "name")
-    private RoleEnum name;
-
+    private String name;
+    @ManyToMany
+    private Set<Permission> permissions;
 }
