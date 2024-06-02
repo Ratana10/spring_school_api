@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
-      id: 005_insert_students
+      id: 002_insert_study_types
       author: sanratana18@gmail.com
       changes:
         - sqlFile:
-            path: db/data/create/001_study_type.sql
+            path: db/data/0001_init_new_schema.sql
