@@ -10,6 +10,6 @@ databaseChangeLog:
 #  - include:
 #      file: db/changelog/005_insert_students.yml
 #  - include:
-#      file: db/changelog/006_init_new_schema.sql
-#  - include:
-#      file: db/changelog/007_insert_testing.yml
+#      file: db/changelog/0001_init_new_schema.sql
+  - include:
+      file: db/changelog/010_insert_new_schema.yml
