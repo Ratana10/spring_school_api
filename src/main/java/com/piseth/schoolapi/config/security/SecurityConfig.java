@@ -26,6 +26,15 @@ public class SecurityConfig {
             "/api/courses",
             "/api/courses/{id}",
             "/api/promotions",
+            "/swagger-ui/**",
+    };
+
+    private final String[] STUDENT_LIST_URLs = {
+            "/api/student/{studentId}/courses", //View their enrollment courses
+    };
+
+    private final String[] ADMIN_LIST_URLs = {
+            "/api/student/{studentId}/courses", //View their enrollment courses
     };
 
 
