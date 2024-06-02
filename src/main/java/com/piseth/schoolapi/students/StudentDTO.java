@@ -14,7 +14,5 @@ public class StudentDTO {
 
     private String type;
 
-    private String phone;
-
     private String gender;
 }

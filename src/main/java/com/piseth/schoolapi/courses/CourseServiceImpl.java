@@ -79,12 +79,12 @@ public class CourseServiceImpl implements CourseService {
     public  Page<Course> getCourses(Map<String, String> params) {
         CourseFilter courseFilter = new CourseFilter();
 
-        if(params.containsKey(ParamType.ID.getDescription())){
-            String id = params.get(ParamType.ID.getDescription());
+        if(params.containsKey(ParamType.ID.getName())){
+            String id = params.get(ParamType.ID.getName());
             courseFilter.setId(Long.parseLong(id));
         }
-        if(params.containsKey(ParamType.NAME.getDescription())){
-            String name = params.get(ParamType.NAME.getDescription());
+        if(params.containsKey(ParamType.NAME.getName())){
+            String name = params.get(ParamType.NAME.getName());
             courseFilter.setName(name);
         }
 

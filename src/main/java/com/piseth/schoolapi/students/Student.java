@@ -28,10 +28,8 @@ public class Student extends AuditingEntity {
     @Enumerated(EnumType.STRING)
     private StudentType studentType;
 
-    @Column(name = "phone", unique = true)
-    private String phone;
-
     @Column(name = "gender")
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
 }

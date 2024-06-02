@@ -1,6 +1,9 @@
 package com.piseth.schoolapi.students;
 
+import org.springframework.data.domain.Page;
+
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface StudentService {
@@ -13,5 +16,6 @@ public interface StudentService {
     Student getById(Long id);
 
     List<Student> getStudents();
+    Page<Student> getStudents(Map<String,String> params);
 
 }

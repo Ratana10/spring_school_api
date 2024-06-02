@@ -8,6 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum ParamType {
     ID("id"),
-    NAME("name");
-    private String description;
+    NAME("name"),
+    GMAIL("gmail");
+    private String name;
 }
