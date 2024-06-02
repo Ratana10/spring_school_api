@@ -1,5 +1,6 @@
 package com.piseth.schoolapi.enrollment;
 
+import com.piseth.schoolapi.auditing.AuditingEntity;
 import com.piseth.schoolapi.courses.Course;
 import com.piseth.schoolapi.payments.PaymentStatus;
 import com.piseth.schoolapi.promotion.Promotion;
@@ -22,7 +23,7 @@ import java.util.Set;
 @Entity
 @Data
 @Table(name = "enrollments")
-public class Enrollment {
+public class Enrollment extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "enr_id")

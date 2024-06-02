@@ -1,5 +1,6 @@
 package com.piseth.schoolapi.categories;
 
+import com.piseth.schoolapi.auditing.AuditingEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "categories")
-public class Category {
+public class Category extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cat_id")

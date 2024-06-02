@@ -1,5 +1,6 @@
 package com.piseth.schoolapi.courses;
 
+import com.piseth.schoolapi.auditing.AuditingEntity;
 import com.piseth.schoolapi.categories.Category;
 import com.piseth.schoolapi.studytypes.StudyType;
 import jakarta.persistence.*;
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
 @Data
 @Entity
 @Table(name = "courses")
-public class Course {
+public class Course extends AuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cau_id")
