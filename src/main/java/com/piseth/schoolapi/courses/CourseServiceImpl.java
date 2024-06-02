@@ -2,7 +2,10 @@ package com.piseth.schoolapi.courses;
 
 
 import com.piseth.schoolapi.exception.ResourceNotFoundException;
+import com.piseth.schoolapi.utils.PageUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -72,7 +75,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> getCourses(Map<String, String> params) {
+    public  Page<Course> getCourses(Map<String, String> params) {
         CourseFilter courseFilter = new CourseFilter();
 
         if(params.containsKey("id")){
@@ -84,9 +87,20 @@ public class CourseServiceImpl implements CourseService {
             courseFilter.setName(name);
         }
 
+        int page = 1;
+        if((params.containsKey(PageUtil.PAGE_NUMBER))){
+            page = Integer.parseInt(params.get(PageUtil.PAGE_NUMBER));
+        }
+
+        int size = 1;
+        if((params.containsKey(PageUtil.PAGE_SIZE))){
+            size = Integer.parseInt(params.get(PageUtil.PAGE_SIZE));
+        }
+
+        Pageable pageable = PageUtil.getPageable(page, size);
         CourseSpec courseSpec = new CourseSpec(courseFilter);
 
-        return courseRepository.findAll(courseSpec);
+        return courseRepository.findAll(pageable);
     }
 
 }
