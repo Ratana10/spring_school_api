@@ -28,4 +28,16 @@ public class TestServiceImpl  {
         return testRepository.save(notFoud);
     }
 
+    public void delete(Long id) {
+        Test notFoud = testRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("not foud", id));
+
+         testRepository.deleteById(id);
+    }
+
+
+    public List<Test> getAll() {
+        List<Test> all = testRepository.findAll();
+        return all;
+    }
 }

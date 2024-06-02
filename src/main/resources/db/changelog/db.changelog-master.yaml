@@ -9,3 +9,7 @@ databaseChangeLog:
       file: db/changelog/004_insert_courses.yml
   - include:
       file: db/changelog/005_insert_students.yml
+  - include:
+      file: db/changelog/006_init_new_schema.sql
+  - include:
+      file: db/changelog/007_insert_testing.yml

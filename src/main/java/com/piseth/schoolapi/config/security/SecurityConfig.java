@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(WHITE_LIST_URLs)
                         .permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/tests")
+                        .requestMatchers("/api/tests/**")
                         .hasRole(RoleEnum.ADMIN.name())
                         .requestMatchers("/api/categories/**")
                         .hasRole(RoleEnum.ADMIN.name())

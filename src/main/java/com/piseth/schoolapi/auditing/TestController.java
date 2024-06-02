@@ -48,4 +48,34 @@ public class TestController {
                 .status(HttpStatus.CREATED)
                 .body(response);
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<ApiResponse> delete(@PathVariable Long id) {
+
+        testService.delete(id);
+        ApiResponse response = ApiResponse.builder()
+                .data(null)
+                .message("update test successful")
+                .httpStatus(HttpStatus.CREATED.value())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse> getAll() {
+
+        List<Test> all = testService.getAll();
+        ApiResponse response = ApiResponse.builder()
+                .data(all)
+                .message("all test successful")
+                .httpStatus(HttpStatus.CREATED.value())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
+    }
 }
