@@ -25,7 +25,8 @@ public enum Role {
   )),
   STUDENT(Set.of(
           COURSE_READ,
-          STUDENT_WRITE
+          STUDENT_WRITE,
+          CATEGORY_READ
   ))
 
   ;

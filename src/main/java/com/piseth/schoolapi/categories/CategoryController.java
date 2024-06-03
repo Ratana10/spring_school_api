@@ -14,12 +14,13 @@ import static com.piseth.schoolapi.users.Permission.*;
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
-// @TODO config method seucrity
+// @TODO config method security
 public class CategoryController {
 
     private final CategoryService categoryService;
 
     @PreAuthorize("hasAuthority('category:write')")
+
     @PostMapping
     public ResponseEntity<ApiResponse> create(@RequestBody CategoryDTO dto) {
         Category category = CategoryMapper.INSTANCE.toCategory(dto);
@@ -36,7 +37,6 @@ public class CategoryController {
                 .body(response);
     }
 
-    @PreAuthorize("hasAuthority('category:write')")
 
     @PutMapping("{id}")
     public ResponseEntity<ApiResponse> update(@PathVariable Long id, @RequestBody CategoryDTO dto) {
@@ -54,7 +54,6 @@ public class CategoryController {
                 .body(response);
     }
 
-    @PreAuthorize("hasAuthority('category:write')")
     @DeleteMapping("{id}")
     public ResponseEntity<ApiResponse> delete(@PathVariable Long id) {
         categoryService.delete(id);
@@ -70,7 +69,6 @@ public class CategoryController {
                 .body(response);
     }
 
-    @PreAuthorize("hasAuthority('category:read')")
 
     @GetMapping("{id}")
     public ResponseEntity<ApiResponse> getById(@PathVariable Long id) {
@@ -87,7 +85,6 @@ public class CategoryController {
                 .body(response);
     }
 
-    @PreAuthorize("hasAuthority('category:read')")
     @GetMapping
     public ResponseEntity<ApiResponse> getAll() {
         List<Category> categories = categoryService.getCategories();

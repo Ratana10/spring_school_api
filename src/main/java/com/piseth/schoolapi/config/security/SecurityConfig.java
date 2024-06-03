@@ -28,9 +28,7 @@ public class SecurityConfig {
     private final String[] WHITE_LIST_URLs = {
             "/api/auth/register",
             "/api/auth/login",
-//            "/api/courses",
-//            "/api/courses/{id}",
-//            "/api/promotions",
+
     };
 
     private final String[] SWAGGER_LIST_URLs = {
@@ -73,11 +71,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/students/**").hasAuthority(STUDENT_READ.name())
                         .requestMatchers(HttpMethod.POST, "/api/students/**").hasAuthority(STUDENT_WRITE.name())
 
-                        .requestMatchers("/api/categories").hasAnyRole(ADMIN.name())
-
                         .requestMatchers("/api/study-types/**").hasRole(ADMIN.name())
-                        .requestMatchers(HttpMethod.GET, "/api/study-types/**").hasAuthority(STUDY_TYPE_READ.name())
-                        .requestMatchers(HttpMethod.POST, "/api/study-types/**").hasAuthority(STUDY_TYPE_READ.name())
+                        .requestMatchers(HttpMethod.GET, "/api/study-types").hasAnyAuthority(STUDY_TYPE_READ.getPermission() )
+                        .requestMatchers(HttpMethod.GET, "/api/study-types/{id}").hasAnyAuthority(STUDY_TYPE_READ.getPermission() )
+                        .requestMatchers(HttpMethod.POST, "/api/study-types").hasAuthority(STUDY_TYPE_WRITE.name())
 
                         .anyRequest()
                         .authenticated()
