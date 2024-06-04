@@ -21,11 +21,14 @@ public class PromotionServiceImpl implements PromotionService {
 
         byId.setName(promotion.getName());
         byId.setDescription(promotion.getDescription());
+        byId.setRequiredCourses(promotion.getRequiredCourses());
+        byId.setPromotionCourses(promotion.getPromotionCourses());
+        byId.setDiscountAmount(promotion.getDiscountAmount());
+        byId.setDiscountPercentage(promotion.getDiscountPercentage());
         byId.setStartDate(promotion.getStartDate());
         byId.setEndDate(promotion.getEndDate());
-        byId.setPromotionCourses(promotion.getPromotionCourses());
 
-        return promotionRepository.save(promotion);
+        return promotionRepository.save(byId);
     }
 
     @Override
@@ -37,7 +40,7 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     public Promotion getById(Long id) {
         return promotionRepository.findById(id)
-                .orElse(null);
+                .orElseThrow(()-> new ResourceNotFoundException("Promotion", id));
     }
 
     @Override

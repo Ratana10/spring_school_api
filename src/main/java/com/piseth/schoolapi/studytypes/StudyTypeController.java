@@ -3,6 +3,7 @@ package com.piseth.schoolapi.studytypes;
 import com.piseth.schoolapi.courses.Course;
 import com.piseth.schoolapi.courses.CourseService;
 import com.piseth.schoolapi.exception.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class StudyTypeController {
     private final CourseService courseService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse> create(@RequestBody StudyTypeDTO dto) {
+    public ResponseEntity<ApiResponse> create(@Valid @RequestBody StudyTypeDTO dto) {
         StudyType studyType = StudyTypeMapper.INSTANCE.toStudyType(dto);
         studyType = studyTypeService.create(studyType);
 
@@ -37,7 +38,7 @@ public class StudyTypeController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ApiResponse> update(@PathVariable Long id, @RequestBody StudyTypeDTO dto) {
+    public ResponseEntity<ApiResponse> update(@PathVariable Long id,@Valid @RequestBody StudyTypeDTO dto) {
         StudyType studyType = StudyTypeMapper.INSTANCE.toStudyType(dto);
         studyType = studyTypeService.update(id, studyType);
 

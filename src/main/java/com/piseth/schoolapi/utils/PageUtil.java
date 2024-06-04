@@ -25,18 +25,5 @@ public interface PageUtil {
         return PageRequest.of(pageNumber - 1, pageSize);
     }
 
-    static Pageable getPageable(Map<String, String> params) {
-        int page = DEFAULT_PAGE_NUMBER;
-        if (params.containsKey(PAGE_NUMBER)) {
-            page = Integer.parseInt(params.get(PAGE_NUMBER));
-        }
-
-        int size = DEFAULT_PAGE_SIZE;
-        if (params.containsKey(PAGE_SIZE)) {
-            size = Integer.parseInt(params.get(PAGE_SIZE));
-        }
-
-        return getPageable(page, size);
-    }
 
 }

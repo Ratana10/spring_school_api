@@ -18,7 +18,7 @@ import static com.piseth.schoolapi.users.Permission.*;
 import static com.piseth.schoolapi.users.Role.ADMIN;
 import static com.piseth.schoolapi.users.Role.STUDENT;
 
-@EnableWebSecurity
+//@EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -63,21 +63,21 @@ public class SecurityConfig {
                         .requestMatchers(SWAGGER_LIST_URLs)
                         .permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/courses").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/courses/{id}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/promotions").permitAll()
-
-                        .requestMatchers("/api/students/**").hasAnyRole(STUDENT.name(), ADMIN.name())
-                        .requestMatchers(HttpMethod.GET, "/api/students/**").hasAuthority(STUDENT_READ.name())
-                        .requestMatchers(HttpMethod.POST, "/api/students/**").hasAuthority(STUDENT_WRITE.name())
-
-                        .requestMatchers("/api/study-types/**").hasRole(ADMIN.name())
-                        .requestMatchers(HttpMethod.GET, "/api/study-types").hasAnyAuthority(STUDY_TYPE_READ.getPermission() )
-                        .requestMatchers(HttpMethod.GET, "/api/study-types/{id}").hasAnyAuthority(STUDY_TYPE_READ.getPermission() )
-                        .requestMatchers(HttpMethod.POST, "/api/study-types").hasAuthority(STUDY_TYPE_WRITE.name())
-
-                        .anyRequest()
-                        .authenticated()
+                        .requestMatchers("/**").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/api/courses/{id}").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/api/promotions").permitAll()
+//
+//                        .requestMatchers("/api/students/**").hasAnyRole(STUDENT.name(), ADMIN.name())
+//                        .requestMatchers(HttpMethod.GET, "/api/students/**").hasAuthority(STUDENT_READ.name())
+//                        .requestMatchers(HttpMethod.POST, "/api/students/**").hasAuthority(STUDENT_WRITE.name())
+//
+//                        .requestMatchers("/api/study-types/**").hasRole(ADMIN.name())
+//                        .requestMatchers(HttpMethod.GET, "/api/study-types").hasAnyAuthority(STUDY_TYPE_READ.getPermission() )
+//                        .requestMatchers(HttpMethod.GET, "/api/study-types/{id}").hasAnyAuthority(STUDY_TYPE_READ.getPermission() )
+//                        .requestMatchers(HttpMethod.POST, "/api/study-types").hasAuthority(STUDY_TYPE_WRITE.name())
+//
+//                        .anyRequest()
+//                        .authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

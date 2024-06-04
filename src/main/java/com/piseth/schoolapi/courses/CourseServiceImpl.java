@@ -2,7 +2,9 @@ package com.piseth.schoolapi.courses;
 
 
 import com.piseth.schoolapi.exception.ResourceNotFoundException;
+import com.piseth.schoolapi.students.StudentServiceImpl;
 import com.piseth.schoolapi.utils.PageUtil;
+import com.piseth.schoolapi.utils.PaginationUtil;
 import com.piseth.schoolapi.utils.ParamType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,8 +38,8 @@ public class CourseServiceImpl implements CourseService {
         byId.setImage(course.getImage());
         byId.setStudentPrice(course.getStudentPrice());
         byId.setNormalPrice(course.getNormalPrice());
-//            c.setStudyType(course.getStudyType());
-//            c.setCategory(course.getCategory());
+        byId.setStudyType(course.getStudyType());
+        byId.setCategory(course.getCategory());
         return courseRepository.save(byId);
 
     }
@@ -88,20 +91,18 @@ public class CourseServiceImpl implements CourseService {
             courseFilter.setName(name);
         }
 
-        int page = 1;
-        if((params.containsKey(PageUtil.PAGE_NUMBER))){
-            page = Integer.parseInt(params.get(PageUtil.PAGE_NUMBER));
-        }
+        Pageable pageable = PaginationUtil.getPageNumberAndPageSize(params);
 
-        int size = 1;
-        if((params.containsKey(PageUtil.PAGE_SIZE))){
-            size = Integer.parseInt(params.get(PageUtil.PAGE_SIZE));
-        }
-
-        Pageable pageable = PageUtil.getPageable(page, size);
         CourseSpec courseSpec = new CourseSpec(courseFilter);
 
         return courseRepository.findAll(courseSpec, pageable);
+    }
+
+    @Override
+    public Set<Long> courseSetToCourseIdSet(Set<Course> courses) {
+        return courses.stream()
+                .map(Course::getId)
+                .collect(Collectors.toSet());
     }
 
 }

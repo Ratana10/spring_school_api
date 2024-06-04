@@ -9,25 +9,20 @@ import java.util.stream.Collectors;
 
 @Mapper(
         componentModel = "spring",
-        uses = {CourseService.class}
+        uses = {CourseService.class, PromotionService.class}
 )
 public interface PromotionMapper {
     @Mappings({
-            @Mapping(source = "promotionCourseIds", target = "promotionCourses", qualifiedByName = "courseIdSetToCourseSet"),
-            @Mapping(source = "requiredCourseIds", target = "requiredCourses", qualifiedByName = "courseIdSetToCourseSet")
+            @Mapping(source = "promotionCourseIds", target = "promotionCourses"),
+            @Mapping(source = "requiredCourseIds", target = "requiredCourses")
     })
-    Promotion toPromotion(PromotionDTO promotionDTO, @Context CourseService courseService);
+    Promotion toPromotion(PromotionDTO promotionDTO);
 
     @Mappings({
             @Mapping(source = "promotionCourses", target = "promotionCourseIds", qualifiedByName = "courseSetToCourseIdSet"),
             @Mapping(source = "requiredCourses", target = "requiredCourseIds", qualifiedByName = "courseSetToCourseIdSet")
     })
     PromotionDTO toPromotionDTO(Promotion promotion);
-
-    @Named("courseIdSetToCourseSet")
-    default Set<Course> courseIdSetToCourseSet(Set<Long> courseIds, @Context CourseService courseService) {
-        return courseService.findCoursesByIds(courseIds);
-    }
 
     @Named("courseSetToCourseIdSet")
     default Set<Long> courseSetToCourseIdSet(Set<Course> courses) {
