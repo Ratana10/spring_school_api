@@ -1,10 +1,7 @@
 package com.piseth.schoolapi.promotion;
 
-import com.piseth.schoolapi.courses.Course;
-import com.piseth.schoolapi.courses.CourseDTO;
-import com.piseth.schoolapi.courses.CourseMapper;
-import com.piseth.schoolapi.courses.CourseService;
 import com.piseth.schoolapi.exception.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +16,11 @@ public class PromotionController {
 
     private final PromotionService promotionService;
     private final PromotionMapper promotionMapper;
-    private final CourseService courseService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse> create(@RequestBody PromotionDTO promotionDTO) {
+    public ResponseEntity<ApiResponse> create(@Valid @RequestBody PromotionDTO promotionDTO) {
 
-        Promotion promotion = promotionMapper.toPromotion(promotionDTO, courseService);
+        Promotion promotion = promotionMapper.toPromotion(promotionDTO);
 
         promotion = promotionService.create(promotion);
 
@@ -40,13 +36,13 @@ public class PromotionController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ApiResponse> update(@PathVariable Long id, @RequestBody PromotionDTO promotionDTO) {
-//        Promotion promotion = promotionMapper.toPromotion(promotionDTO, courseService);
-//        promotion = promotionService.update(id, promotion);
+    public ResponseEntity<ApiResponse> update(@PathVariable Long id, @Valid  @RequestBody PromotionDTO promotionDTO) {
+        Promotion promotion = promotionMapper.toPromotion(promotionDTO);
+        promotion = promotionService.update(id, promotion);
 
         ApiResponse response = ApiResponse.builder()
-                .data(null)
-                .message("fix update promotion successful")
+                .data(promotionMapper.toPromotionDTO(promotion))
+                .message("update promotion successful")
                 .httpStatus(HttpStatus.OK.value())
                 .build();
 
@@ -70,12 +66,26 @@ public class PromotionController {
                 .body(response);
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<ApiResponse> getPromotionById(@PathVariable Long id) {
+        Promotion byId = promotionService.getById(id);
+
+        ApiResponse response = ApiResponse.builder()
+                .data(promotionMapper.toPromotionDTO(byId))
+                .message("get promotion successful")
+                .httpStatus(HttpStatus.OK.value())
+                .build();
+
+        return ResponseEntity
+                .ok()
+                .body(response);
+    }
     @GetMapping
     public ResponseEntity<ApiResponse> getAllPromotions() {
         List<Promotion> promotions = promotionService.getPromotions();
 
         ApiResponse response = ApiResponse.builder()
-                .data(promotions)
+                .data(promotions.stream().map(promotionMapper::toPromotionDTO))
                 .message("get all promotions successful")
                 .httpStatus(HttpStatus.OK.value())
                 .build();

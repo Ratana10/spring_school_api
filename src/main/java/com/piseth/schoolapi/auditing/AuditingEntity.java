@@ -20,18 +20,18 @@ import java.time.LocalDateTime;
 public abstract class AuditingEntity {
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = true, updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at", insertable = false)
+    @Column(name = "updated_at", insertable = true)
     private LocalDateTime updatedAt;
 
     @CreatedBy
-    @Column(name = "created_by", nullable = false, updatable = false)
+    @Column(name = "created_by", nullable = true, updatable = false)
     private Long createdBy;
 
     @LastModifiedBy
-    @Column(name = "updated_by", insertable = false)
+    @Column(name = "updated_by", insertable = true)
     private Long updatedBy;
 }

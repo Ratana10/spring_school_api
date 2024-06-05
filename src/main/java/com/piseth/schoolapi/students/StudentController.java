@@ -6,6 +6,7 @@ import com.piseth.schoolapi.courses.CourseMapper;
 import com.piseth.schoolapi.courses.CourseResponse;
 import com.piseth.schoolapi.enrollment.EnrollmentService;
 import com.piseth.schoolapi.exception.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/students")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class StudentController {
 
     private final StudentService studentService;
@@ -25,7 +25,7 @@ public class StudentController {
     private final CourseMapper courseMapper;
 
     @PostMapping
-    public ResponseEntity<ApiResponse> create(@RequestBody StudentDTO dto) {
+    public ResponseEntity<ApiResponse> create(@Valid @RequestBody StudentDTO dto) {
         Student student = StudentMapper.INSTANCE.toStudent(dto);
         student = studentService.create(student);
 
@@ -41,7 +41,7 @@ public class StudentController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ApiResponse> update(@PathVariable Long id, @RequestBody StudentDTO dto) {
+    public ResponseEntity<ApiResponse> update(@PathVariable Long id, @Valid @RequestBody StudentDTO dto) {
         Student student = StudentMapper.INSTANCE.toStudent(dto);
         student = studentService.update(id, student);
 
@@ -103,7 +103,7 @@ public class StudentController {
     }
 
 
-    @GetMapping("{studentId}/enrollments/courses")
+    @GetMapping("{studentId}/courses")
     public ResponseEntity<?> getStudentEnrollmentCourses(@PathVariable Long studentId) {
         List<Course> enrollmentCourses = enrollmentService.getCourseEnrollmentByStudentId(studentId);
 

@@ -19,16 +19,16 @@ public class Promotion extends AuditingEntity {
     @Column(name = "pro_id")
     private Long id;
 
-    @Column(name = "pro_name")
+    @Column(name = "pro_name", nullable = false)
     private String name;
 
     @Column(name = "pro_description")
     private String description;
 
-    @Column(name = "pro_start_date")
+    @Column(name = "pro_start_date", nullable = false)
     private LocalDateTime startDate;
 
-    @Column(name = "pro_end_date")
+    @Column(name = "pro_end_date", nullable = false)
     private LocalDateTime endDate;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)

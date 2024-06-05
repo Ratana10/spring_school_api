@@ -1,12 +1,15 @@
 package com.piseth.schoolapi.students;
 
 import com.piseth.schoolapi.courses.CourseSpec;
+import com.piseth.schoolapi.exception.ApiException;
 import com.piseth.schoolapi.exception.ResourceNotFoundException;
 import com.piseth.schoolapi.utils.PageUtil;
+import com.piseth.schoolapi.utils.PaginationUtil;
 import com.piseth.schoolapi.utils.ParamType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,19 +23,31 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student create(Student student) {
+        if(checkExistsEmail(student.getEmail())){
+            throw new ApiException("email already exists", HttpStatus.BAD_REQUEST);
+        }
         return studentRepository.save(student);
     }
 
     @Override
     public Student update(Long id, Student student) {
         Student stu = getById(id);
-
+        if(checkExistsEmailAndIdNot(id, student.getEmail())){
+            throw new ApiException("email already exists", HttpStatus.BAD_REQUEST);
+        }
         stu.setName(student.getName());
         stu.setEmail(student.getEmail());
-        stu.setPassword(student.getPassword());
         stu.setStudentType(student.getStudentType());
         stu.setGender(student.getGender());
         return studentRepository.save(stu);
+    }
+
+    private boolean checkExistsEmail(String email) {
+        return studentRepository.existsByEmail(email);
+    }
+
+    private boolean checkExistsEmailAndIdNot(Long id, String email) {
+        return studentRepository.existsByEmailAndIdNot(email, id);
     }
 
     @Override
@@ -66,8 +81,11 @@ public class StudentServiceImpl implements StudentService {
             studentFilter.setGmail(params.get(ParamType.GMAIL.getName()));
         }
 
-        Pageable pageable = PageUtil.getPageable(params);
+        Pageable pageable = PaginationUtil.getPageNumberAndPageSize(params);
+
         StudentSpec studentSpec = new StudentSpec(studentFilter);
         return studentRepository.findAll(studentSpec, pageable);
     }
+
+
 }

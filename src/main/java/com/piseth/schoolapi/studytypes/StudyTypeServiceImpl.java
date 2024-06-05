@@ -29,7 +29,7 @@ public class StudyTypeServiceImpl implements StudyTypeService {
 
     @Override
     public void delete(Long id) {
-
+        getById(id);
         studyTypeRepository.deleteById(id);
 
     }

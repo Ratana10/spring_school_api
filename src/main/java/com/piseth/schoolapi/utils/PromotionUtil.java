@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
-public class PromotionUtil2 {
+public class PromotionUtil {
 
     private final EnrollmentRepository enrollmentRepository;
 

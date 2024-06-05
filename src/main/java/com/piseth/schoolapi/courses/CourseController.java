@@ -21,14 +21,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/courses")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
 public class CourseController {
 
     private final CourseService courseService;
 
     private final ScheduleService scheduleService;
     private final ScheduleMapper scheduleMapper;
-    @PreAuthorize("hasAuthority('course:write')")
     @PostMapping
     public ResponseEntity<ApiResponse> create(@RequestBody CourseDTO dto) {
         Course course = CourseMapper.INSTANCE.toCourse(dto);
@@ -45,7 +43,6 @@ public class CourseController {
                 .body(response);
     }
 
-    @PreAuthorize("hasAuthority('course:write')")
     @PutMapping("{id}")
     public ResponseEntity<ApiResponse> update(@PathVariable Long id, @RequestBody CourseDTO dto) {
         Course course = CourseMapper.INSTANCE.toCourse(dto);
@@ -61,7 +58,6 @@ public class CourseController {
                 .ok()
                 .body(response);
     }
-    @PreAuthorize("hasAuthority('course:write')")
     @DeleteMapping("{id}")
     public ResponseEntity<ApiResponse> delete(@PathVariable Long id) {
         courseService.delete(id);
@@ -76,7 +72,6 @@ public class CourseController {
                 .ok()
                 .body(response);
     }
-    @PreAuthorize("hasAuthority('course:read')")
     @GetMapping("{id}")
     public ResponseEntity<ApiResponse> getById(@PathVariable Long id) {
         Course byId = courseService.getById(id);
@@ -92,7 +87,6 @@ public class CourseController {
                 .ok()
                 .body(response);
     }
-    @PreAuthorize("hasAuthority('course:read')")
     @GetMapping
     public ResponseEntity<PageDTO> getAll(@RequestParam Map<String , String > params) {
         Page<Course> courses = courseService.getCourses(params);
@@ -102,7 +96,6 @@ public class CourseController {
                 .body(new PageDTO(courses));
     }
 
-    @PreAuthorize("hasAuthority('course:write')")
     @GetMapping("{courseId}/schedules")
     public ResponseEntity<ApiResponse> getCourseSchedule(@PathVariable Long courseId) {
         List<Schedule> scheduleByCourseId = scheduleService.getScheduleByCourseId(courseId);

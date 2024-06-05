@@ -2,6 +2,7 @@ package com.piseth.schoolapi.schedules;
 
 import com.piseth.schoolapi.categories.Category;
 import com.piseth.schoolapi.exception.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +19,13 @@ public class ScheduleController {
     private final ScheduleMapper scheduleMapper;
 
     @PostMapping
-    public ResponseEntity<ApiResponse> create(@RequestBody ScheduleDTO dto) {
+    public ResponseEntity<ApiResponse> create(@Valid @RequestBody ScheduleDTO dto) {
 
-        Schedule schedule = ScheduleMapper.INSTANCE.toSchedule(dto);
+        Schedule schedule = scheduleMapper.toSchedule(dto);
         schedule = scheduleService.create(schedule);
 
         ApiResponse response = ApiResponse.builder()
-                .data(ScheduleMapper.INSTANCE.toScheduleDTO(schedule))
+                .data(scheduleMapper.toScheduleDTO(schedule))
                 .message("create schedule successful")
                 .httpStatus(HttpStatus.CREATED.value())
                 .build();
@@ -35,13 +36,13 @@ public class ScheduleController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ApiResponse> update(@PathVariable Long id, @RequestBody ScheduleDTO dto) {
+    public ResponseEntity<ApiResponse> update(@PathVariable Long id,@Valid @RequestBody ScheduleDTO dto) {
 
-        Schedule schedule = ScheduleMapper.INSTANCE.toSchedule(dto);
+        Schedule schedule = scheduleMapper.toSchedule(dto);
         schedule = scheduleService.update(id, schedule);
 
         ApiResponse response = ApiResponse.builder()
-                .data(ScheduleMapper.INSTANCE.toScheduleDTO(schedule))
+                .data(scheduleMapper.toScheduleDTO(schedule))
                 .message("update schedule successful")
                 .httpStatus(HttpStatus.CREATED.value())
                 .build();
@@ -70,12 +71,8 @@ public class ScheduleController {
     public ResponseEntity<ApiResponse> getAll() {
         List<Schedule> schedules = scheduleService.getAll();
 
-        List<ScheduleDTO> scheduleDTOList = schedules.stream()
-                .map(scheduleMapper::toScheduleDTO)
-                .toList();
-
         ApiResponse response = ApiResponse.builder()
-                .data(scheduleDTOList)
+                .data(schedules.stream().map(scheduleMapper::toScheduleDTO))
                 .message("get schedules successful")
                 .httpStatus(HttpStatus.OK.value())
                 .build();

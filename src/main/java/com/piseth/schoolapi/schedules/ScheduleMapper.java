@@ -7,21 +7,15 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(
         componentModel = "spring",
-        uses = {CourseService.class}
+        uses = {CourseService.class, ScheduleService.class}
 )
 public interface ScheduleMapper {
     ScheduleMapper INSTANCE = Mappers.getMapper(ScheduleMapper.class);
 
-    @Mapping(source = "courseId", target = "course.id")
-    Schedule toSchedule(ScheduleDTO enrollDTO);
+    @Mapping(source = "courseId", target = "course")
+    Schedule toSchedule(ScheduleDTO scheduleDTO);
 
     @Mapping(source = "course.id", target = "courseId")
-    ScheduleDTO toScheduleDTO(Schedule enroll);
-
-//    default List<Enroll> toScheduleList(List<ScheduleDTO> scheduleDTOS){
-//        return sch.stream()
-//                .map(this::toSchedule)
-//                .collect(Collectors.toList());
-//    }
+    ScheduleDTO toScheduleDTO(Schedule schedule);
 
 }

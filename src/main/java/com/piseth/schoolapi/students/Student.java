@@ -21,9 +21,6 @@ public class Student extends AuditingEntity {
     @Email
     private String email;
 
-    @Column(name = "password")
-    private String password;
-
     @Column(name = "stu_type")
     @Enumerated(EnumType.STRING)
     private StudentType studentType;

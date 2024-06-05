@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public interface CourseService {
     Course create(Course course);
@@ -24,5 +25,5 @@ public interface CourseService {
     Set<Course> findCoursesByIds(Set<Long> courseIds);
     Page<Course> getCourses(Map<String ,String > params);
 
-
+    Set<Long> courseSetToCourseIdSet(Set<Course> courses);
 }

@@ -1,18 +1,21 @@
 package com.piseth.schoolapi.students;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.Data;
 
 @Data
 public class StudentDTO {
 
+    @NotNull(message = "name is required")
     private String name;
 
+    @NotNull(message = "email is required")
     private String email;
 
-    private String password;
+    @NotNull(message = "student-type is required")
+    private String studentType;
 
-    private String type;
-
+    @Null
     private String gender;
 }
