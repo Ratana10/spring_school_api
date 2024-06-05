@@ -33,9 +33,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final StudentService studentService;
 
     private final CourseUtil courseUtil;
-    private final PromotionUtil2 promotionUtil2;
+    private final PromotionUtil promotionUtil;
     private final EnrollmentUtil enrollmentUtil;
-    private final PaymentUtil2 paymentUtil2;
+    private final PaymentUtil paymentUtil;
 
 
     @Override
@@ -58,7 +58,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         if (enrollmentDTO.getPromotionId() != null) {
             Promotion promotion = promotionService.getById(enrollmentDTO.getPromotionId());
             if (promotion != null) {
-                promotionUtil2.applyPromotion(enrollment, promotion);
+                promotionUtil.applyPromotion(enrollment, promotion);
             }
         }
 
@@ -70,7 +70,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         if (enrollmentDTO.getAmount() != null
                 && enrollmentDTO.getAmount().compareTo(BigDecimal.ZERO) > 0) {
 
-            cashback = paymentUtil2.makePayment(
+            cashback = paymentUtil.makePayment(
                     enrollment,
                     enrollmentDTO.getAmount(),
                     enrollmentDTO.getPaymentType(),
