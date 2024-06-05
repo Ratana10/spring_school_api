@@ -9,6 +9,7 @@ import lombok.Getter;
 public enum ParamType {
     ID("id"),
     NAME("name"),
-    GMAIL("gmail");
+    GMAIL("gmail"),
+    PAYMENT_STATUS("payment-status");
     private String name;
 }

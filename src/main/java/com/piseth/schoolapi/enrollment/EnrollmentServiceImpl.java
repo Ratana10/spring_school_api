@@ -8,15 +8,16 @@ import com.piseth.schoolapi.payments.PaymentStatus;
 import com.piseth.schoolapi.promotion.Promotion;
 import com.piseth.schoolapi.promotion.PromotionService;
 import com.piseth.schoolapi.students.StudentService;
-import com.piseth.schoolapi.utils.CourseUtil;
-import com.piseth.schoolapi.utils.PaymentUtil2;
-import com.piseth.schoolapi.utils.PromotionUtil2;
+import com.piseth.schoolapi.utils.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -77,8 +78,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             );
 
         }
-
-        return enrollmentMapper.toEnrollmentDTO(enrollment);
+        enrollmentMapper.toEnrollmentDTO(enrollment);
+        return enrollmentDTO;
     }
 
     @Override
@@ -100,6 +101,24 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
+    public Page<Enrollment> getAllEnrollments(Map<String, String> params) {
+        EnrollmentFilter enrollmentFilter = new EnrollmentFilter();
+
+        if (params.containsKey(ParamType.PAYMENT_STATUS.getName())) {
+
+            String status = params.get(ParamType.PAYMENT_STATUS.getName());
+            PaymentStatus paymentStatus = PaymentStatus.valueOf(status.toUpperCase());
+            enrollmentFilter.setPaymentStatus(paymentStatus);
+        }
+
+        Pageable pageable = PaginationUtil.getPageNumberAndPageSize(params);
+
+        EnrollmentSpec enrollmentSpec = new EnrollmentSpec(enrollmentFilter);
+
+        return enrollmentRepo.findAll(enrollmentSpec, pageable);
+    }
+
+    @Override
     public Enrollment findStudentIdAndCourseId(Long studentId, Long courseId) {
         return enrollmentRepo.findByStudentIdAndCourseId(studentId, courseId)
                 .orElse(null);
@@ -115,12 +134,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         //search student
         studentService.getById(studentId);
         List<Enrollment> enrollmentsById = enrollmentRepo.findByStudentId(studentId);
-        List<Course> list = enrollmentsById.stream()
+
+        return enrollmentsById.stream()
                 .flatMap(enr -> enr.getCourses().stream())
                 .distinct()
                 .toList();
-
-        return list;
     }
 
 }

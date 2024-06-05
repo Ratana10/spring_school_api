@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
         uses = {
                 StudentService.class,
                 CourseService.class,
+                EnrollmentService.class
         }
 )
 public interface EnrollmentMapper {
@@ -30,6 +31,10 @@ public interface EnrollmentMapper {
             @Mapping(source = "courses", target = "courseIds", qualifiedByName = "courseSetToCourseIdSet")
     })
     EnrollmentDTO toEnrollmentDTO(Enrollment enrollment);
+
+
+    @Mapping(source = "student.id", target = "studentId")
+    EnrollmentResponse toEnrollmentResponse(Enrollment enrollment);
 
     @Named("courseSetToCourseIdSet")
     default Set<Long> courseSetToCourseIdSet(Set<Course> courses) {
