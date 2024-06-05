@@ -1,10 +1,7 @@
 package com.piseth.schoolapi;
 
-import com.piseth.schoolapi.config.jwt.JwtService;
-import com.piseth.schoolapi.studytypes.StudyType;
-import com.piseth.schoolapi.studytypes.StudyTypeRepository;
+import com.piseth.schoolapi.config.JwtService;
 import com.piseth.schoolapi.users.Role;
-import com.piseth.schoolapi.users.RoleEnum;
 import com.piseth.schoolapi.users.User;
 import com.piseth.schoolapi.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +11,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.List;
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditAware")
@@ -56,7 +51,7 @@ public class SchoolApiApplication {
 						.lastName("user lastname")
 						.email("user@gmail.com")
 						.password(passwordEncoder.encode("user123"))
-						.role(Role.STUDENT)
+						.role(Role.MANAGER)
 						.build();
 
 				token = jwtService.generateToken(userRepo.save(user));

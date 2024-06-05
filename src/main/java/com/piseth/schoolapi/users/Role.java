@@ -6,28 +6,36 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import static com.piseth.schoolapi.users.Permission.*;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public enum Role {
-  ADMIN(Set.of(
-          STUDY_TYPE_READ,
-          STUDY_TYPE_WRITE,
-          CATEGORY_READ,
-          CATEGORY_WRITE,
-          COURSE_READ,
-          COURSE_WRITE,
-          STUDENT_READ,
-          STUDENT_WRITE
-  )),
-  STUDENT(Set.of(
-          COURSE_READ,
-          STUDENT_WRITE,
-          CATEGORY_READ
-  ))
+
+  USER(Collections.emptySet()),
+  ADMIN(
+          Set.of(
+                  ADMIN_READ,
+                  ADMIN_UPDATE,
+                  ADMIN_DELETE,
+                  ADMIN_CREATE,
+                  MANAGER_READ,
+                  MANAGER_UPDATE,
+                  MANAGER_DELETE,
+                  MANAGER_CREATE
+          )
+  ),
+  MANAGER(
+          Set.of(
+                  MANAGER_READ,
+                  MANAGER_UPDATE,
+                  MANAGER_DELETE,
+                  MANAGER_CREATE
+          )
+  )
 
   ;
 
@@ -37,7 +45,7 @@ public enum Role {
   public List<SimpleGrantedAuthority> getAuthorities() {
     var authorities = getPermissions()
             .stream()
-            .map(authority -> new SimpleGrantedAuthority(authority.getPermission()))
+            .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
             .collect(Collectors.toList());
     authorities.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
     return authorities;

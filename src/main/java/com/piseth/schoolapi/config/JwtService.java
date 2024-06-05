@@ -1,4 +1,4 @@
-package com.piseth.schoolapi.config.jwt;
+package com.piseth.schoolapi.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
