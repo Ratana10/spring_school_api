@@ -14,12 +14,9 @@ import static com.piseth.schoolapi.users.Permission.*;
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
-// @TODO config method security
 public class CategoryController {
 
     private final CategoryService categoryService;
-
-    @PreAuthorize("hasAuthority('category:write')")
 
     @PostMapping
     public ResponseEntity<ApiResponse> create(@RequestBody CategoryDTO dto) {

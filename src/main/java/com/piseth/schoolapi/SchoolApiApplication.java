@@ -47,11 +47,11 @@ public class SchoolApiApplication {
 				userRepo.save(admin);
 
 				User user = User.builder()
-						.firstName("user firstname")
-						.lastName("user lastname")
-						.email("user@gmail.com")
-						.password(passwordEncoder.encode("user123"))
-						.role(Role.MANAGER)
+						.firstName("student firstname")
+						.lastName("student lastname")
+						.email("student@gmail.com")
+						.password(passwordEncoder.encode("student123"))
+						.role(Role.STUDENT)
 						.build();
 
 				token = jwtService.generateToken(userRepo.save(user));
