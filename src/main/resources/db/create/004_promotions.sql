@@ -30,11 +30,11 @@ INSERT INTO promotions(
     deleted
 )
 VALUES
-    ('Buy 3 discount 50%', 'Buy 3  courses discount 50%', 0, 0.5, '2024-05-20 00:00:00', '2024-05-20 00:00:00', CURRENT_TIMESTAMP, null, 1, null, false),
-    ('Buy 3 discount paid 2', 'Buy 3 courses  paid 2 course', 0, 0, '2024-05-20 00:00:00', '2024-05-20 00:00:00', CURRENT_TIMESTAMP, null, 1, null, false),
-    ('Buy 3 only 125$', 'Buy 3 courses paid only 125$', 125, 0, '2024-05-20 00:00:00', '2024-05-20 00:00:00', CURRENT_TIMESTAMP, null, 1, null, false),
+    ('Buy 3 discount 50%', 'Buy 3  courses discount 50%', 0, 0.5, '2024-05-20 00:00:00', '2024-06-20 00:00:00', CURRENT_TIMESTAMP, null, 1, null, false),
+    ('Buy 3 discount paid 2', 'Buy 3 courses  paid 2 course', 0, 0, '2024-05-20 00:00:00', '2024-06-20 00:00:00', CURRENT_TIMESTAMP, null, 1, null, false),
+    ('Buy 3 only 125$', 'Buy 3 courses paid only 125$', 125, 0, '2024-05-20 00:00:00', '2024-06-20 00:00:00', CURRENT_TIMESTAMP, null, 1, null, false),
     ('Buy 3 free 2 ', 'Buy 3 (java basic, java advance, spring core) courses free 2 courses (springboot and microservice), ',
-     0, 0, '2024-05-20 00:00:00', '2024-05-20 00:00:00', CURRENT_TIMESTAMP, null, 1, null, false);
+     0, 0, '2024-05-20 00:00:00', '2024-06-20 00:00:00', CURRENT_TIMESTAMP, null, 1, null, false);
 
 
 
